@@ -1,0 +1,40 @@
+<%- include partials/header.ejs %>
+
+<section id="garage">
+    <div class="container-fluid cf-garage">
+        <div class="row">
+            <div class="col-md-12 headCol">
+                <h1>Add New Vehicle</h1>
+            </div>
+            <div class="col-md-9 formCol">
+                <form action="/addNewVehicle" method="post">
+                    <div class="mb-3">
+                      <label for="carModel" class="form-label">Model</label>
+                      <input type="text" class="form-control someInput" name="carModel" id="carModel" aria-describedby="carModel">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carName" class="form-label">Name</label>
+                        <input type="text" class="form-control someInput" name="carName"  id="carName" aria-describedby="carName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carSeat" class="form-label">Capacity</label>
+                        <input type="text" class="form-control someInput" name="carSeat" id="carSeat" aria-describedby="carSeat">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carRegNo" class="form-label">Registration Number</label>
+                        <input type="text" class="form-control someInput" name="carRegNo" id="carRegNo" aria-describedby="carRegNo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carTariff" class="form-label">Tariff</label>
+                        <input type="number" class="form-control someInput" name="carTariff" id="carTariff" aria-describedby="carTariff">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                  </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<%- include partials/footer.ejs %>

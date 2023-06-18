@@ -1,0 +1,121 @@
+<%- include("partials/header.ejs") -%>
+
+
+<section id="garage">
+    <div class="container-fluid cf-garage">
+        <div class="row">
+            <div class="col-md-12 headCol">
+                <h1>Trip Presets</h1>
+            </div>
+            <form action="/newTripPreset" method="post">
+            <div class="col-md-4 formDivCen">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="tripDetail" id="tripDetail" placeholder="From - To">
+                    <label for="tripDetail">Trip Name</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="from" id="from" placeholder="From">
+                    <label for="from">From</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="to" id="to" placeholder="To">
+                    <label for="to">To</label>
+                  </div>
+                  <div class="form-floating">
+                    <input type="text" class="form-control" name="expKms" id="expKms" placeholder="Exp Kms">
+                    <label for="expKms">Expected KMs</label>
+                  </div>
+            </div>
+            <div class="col-md-4 formDivCen">
+                <button type="submit" class="btn btn-sm btn-warning">Add Trip</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</section>
+
+
+<section id="upcomingTrips">
+    <div class="container-fluid cf-tariffCalc">
+        <div class="row">
+            <div class="col-md-12 headDiv">
+                <h1>Trip Presets</h1>
+            </div>
+
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Trip Details</th>
+                        <th scope="col">Expec KMs</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% if (presets) { %>
+                            <% presets.forEach(preset => { %>
+                             
+                      <tr>
+                        <td><%=preset.destination%></td>
+                        <td><%=preset.expKms%></td>
+                        <td>
+                            
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal-<%=preset._id%>">
+                              Edit
+                            </button>
+                            
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal-<%=preset._id%>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Trip</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                        <form action="/updatePreset/<%=preset._id%>" method="post">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" value="<%=preset.destination%>" class="form-control" name="newTripDetail" id="newTripDetail" placeholder="From - To">
+                                            <label for="tripDetail">Trip Details</label>
+                                          </div>
+                                          <div class="form-floating">
+                                            <input type="text" value="<%=preset.expKms%>" class="form-control" name="newExpKms" id="newExpKms" placeholder="Exp Kms">
+                                            <label for="expKms">Expected KMs</label>
+                                          </div>
+                                          <button type="submit" class="btn btn-sm mb-3 btn-primary">Update</button>
+                                          </form>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </td>
+                        <td><a href="/deletePreset/<%=preset._id%>" class="btn btn-sm btn-danger" type="button">Del</a></td>
+                      <% }) %>   
+                   
+                   <% } %>
+                      </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<%- include("partials/footer.ejs") -%>

@@ -1,0 +1,62 @@
+<%- include("partials/header.ejs") -%>
+
+<section id="ledgerReport">
+    <div class="container-fluid cf-tariffCalc">
+        <div class="row">
+            <div class="col-md-12 headDiv" style="color: black;">
+                <h1>LEDGER - <%=vehicleName%></h1>
+                <h3>From : <%=from%> ---- To : <%=to%></h3>
+            </div>
+            <% if (entries.length > 0) { %>
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Particulars</th>
+                        <th scope="col">Details</th>
+                        <th scope="col">Credit</th>
+                        <th scope="col">Debit</th>
+                        <th scope="col">Reference</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        
+                            <% entries.forEach(entry => { %>
+                               <tr>
+                                <td><%=entry.ledgerDate.toLocaleString().slice(0,9)%></td>
+                                <td><%=entry.particulars%></td>
+                                <td><%=entry.details%></td>
+                                <td><%=entry.credit%></td>
+                                <td><%=entry.debit%></td>
+                                <td><a href="../<%=entry.billCopy%>" download  style="text-decoration: none; color: blue;">Download</a></td>
+                               </tr>
+                     
+                         
+                        <% }) %>
+                        
+                 
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+
+            </div>
+            <div class="col-md-4">
+
+            </div>
+            <div class="col-md-4" style="text-align: right !important;">
+                Credit : &#8377;<%=totalCreditValue%>.00 <br>
+                Debit : &#8377;<%=totalDebitValue%>.00 <br>
+                Net Profit :  <strong>&#8377;<%=netProfitValue%>.00</strong>
+            </div>
+             <% } else { %>
+             <h2 style="padding: 2% 7% !important; text-align: center;">No Records Found...</h2>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+
+
+<%- include("partials/footer.ejs") -%>

@@ -1,0 +1,98 @@
+<%- include("partials/header.ejs") -%>
+
+<section id="upcomingTrips">
+    <div class="container-fluid cf-tariffCalc">
+        <div class="row">
+            <div class="col-md-12 headDiv2">
+                <h3>Trips Tally  <a href="/logout" type="button" class="btn btn-sm btn-secondary">Log Out</a></h3>
+            </div>
+
+            <div class="col-md-12">
+              <div class="col-md-6" style="padding: 2% 2% 0% !important; margin:auto !important; text-align: center !important;">
+                <form action="/tripsList" method="post">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" name="from" id="from" placeholder="">
+                        <label for="from">Start Date</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <input type="date" class="form-control" name="to" id="to">
+                        <label for="to">End Date</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <button type="submit" class="btn btn-sm btn-primary">Get Ledger</button>
+                    </div>
+                </form>
+            </div>
+
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+<section id="ledger">
+  <div class="container-fluid cf-maintenance">
+      <div class="row">
+          <div class="col-md-12 ledgerDiv">
+              <h2>REPORT</h2>
+          </div>
+          <div class="col-md-6" style="padding: 2% !important;">
+              <form action="/getLedger" method="post">
+                  <div class="form-floating  mb-3">
+                      <select class="form-select" required name="vehicle" id="vehicle" aria-label="vehicleType">
+                          <option disabled selected>Select</option>
+                          <% if (garages) { %>
+                           <% garages.forEach(vehicle => { %>
+                              <option value="<%=vehicle._id%>"><%=vehicle.name%></option>
+                              <input type="hidden" name="garageName" value="<%=vehicle.name%>">
+                           <% }) %>
+                          <% } %>
+                      </select>
+                      <label for="vehicle">Choose Vehicle</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                      <input type="date" class="form-control" name="from" id="from" placeholder="">
+                      <label for="from">Journey Date</label>
+                  </div>
+                  <div class="form-floating  mb-3">
+                      <input type="date" class="form-control" name="to" id="to">
+                      <label for="to">End Date</label>
+                  </div>
+                  <div class="form-floating  mb-3">
+                      <button type="submit" class="btn btn-sm btn-primary">Get Ledger</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include("partials/footer.ejs") -%>

@@ -1,0 +1,29 @@
+<%- include("partials/header.ejs") -%>
+
+<div class="container-fluid cf-login">
+    <div class="row">
+        <div class="col-md-6" style="margin: auto !important; background-color: #f5f5f5;">
+            <h1 class="headDiv">Dashboard Log In</h1>
+            <form action="/login" method="post" style="padding: 2% !important;">
+                <div class="mb-3">
+                  <label for="loginUserName" class="form-label">User Name</label>
+                  <input type="text" required class="form-control" id="loginUserName" name="loginUserName" aria-describedby="username">
+                </div>
+                <div class="mb-3">
+                  <label for="loginPassword" class="form-label">Password</label>
+                  <input type="password" required class="form-control" name="loginPassword" id="loginPassword">
+                </div>
+                <button type="submit" class="btn btn-sm btn-warning">Submit</button>
+              </form>
+              <% if (message !== null) { %>
+                <h6 style="color: red !important;"><%=message%></h6>
+              <% } else { %>
+                <h6 style="color: red !important;"></h6>
+              <% } %>
+        </div>
+    </div>
+</div>
+
+
+
+<%- include("partials/footer.ejs") -%>

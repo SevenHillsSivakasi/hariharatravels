@@ -1,0 +1,210 @@
+<%- include("partials/header.ejs") -%>
+
+<section id="tariffCalc">
+    <div class="container-fluid cf-tariffCalc">
+        <div class="row">
+            <div class="col-md-12 headDiv">
+                <h1>Tariff Calculator</h1>
+            </div>
+            <form action="/saveTrip" method="post">
+                
+                <div class="col-md-12 formDiv">
+                    <h5 class="tripHead">Trip Details</h5>
+                    <% if (preset) { %>
+                        <h5 class="tripName"><%=preset.destination%></h5>
+                    <% } %>
+                </div>                                
+                <div class="col-md-6 formDiv">
+                   
+                    <div class="form-floating mb-3">
+                        <input type="date" required class="form-control" name="journeyDate" id="tripDate" placeholder="">
+                        <label for="tripDate">Journey Date</label>
+                      </div>
+                      <div class="form-floating">
+                        <input type="number" class="form-control" name="tripDays" id="tripDays" placeholder="No. of days" value="1"  onchange="rateCalc()">
+                        <label for="tripDays">Trip Duration</label>
+                      </div>
+                </div>
+                <div class="col-md-6 formDiv">
+                    <div class="form-floating mb-3">
+                        <% if (preset) { %>
+                            <input type="text" required class="form-control" name="from" id="from" value="<%=preset.from%>" placeholder="Boarding Point">
+                            <label for="from">From</label>
+                        <% } else { %>
+                            <input type="text" required class="form-control" name="from" id="from" placeholder="Boarding Point">
+                            <label for="from">From</label>
+                        <% } %>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <% if (preset) { %>
+                            <input type="text" required class="form-control" name="to" id="to" value="<%=preset.to%>" placeholder="Destination">
+                            <label for="to">To</label>
+                        <% } else { %>
+                            <input type="text" required class="form-control" name="to" id="to" placeholder="Boarding Point">
+                            <label for="to">To</label>
+                        <% } %>
+                      </div>
+                </div>
+                <div class="col-md-4 formDiv">
+                    <div class="form-floating  mb-3">
+                        <select class="form-select" required name="vehicleType" id="vehicleType" onchange="myFunction()" aria-label="vehicleType">
+                          <option disabled selected>Select</option>
+                          <option value="Tempo">Tempo</option>
+                          <option value="14 Seater">14 Seater</option>
+                          <option value="18 Seater">18 Seater</option>
+                          <option value="Xylo">Xylo</option>
+                          <option value="Sunny">Sunny</option>
+                        </select>
+                        <label for="vehicleType">Vehicle Type</label>
+                    </div>
+                      <div class="form-floating mb-3">
+                        <select class="form-select" name="acornot"  required id="acornot" onchange="myFunction()" aria-label="acornot">
+                            <option selected value="AC">AC</option>
+                            <option value="NAC">Non AC</option>
+                          </select>
+                          <label for="vehicleType">Vehicle Type</label>
+                      </div>
+                      <div class="form-floating">
+                        <input type="text" class="form-control" required name="ratePerKm" onchange="rateCalc()" id="ratePerKm" placeholder="0 Kms">
+                        <label for="ratePerKm">Rate per KM</label>
+                      </div>
+                </div>
+                <div class="col-md-4 formDiv">
+                    <div class="form-floating mb-3">
+                        <% if (preset) { %>
+                            <input type="number" class="form-control" required name="expKMs" id="expKMs" value="<%=preset.expKms%>" placeholder="Destination" onchange="rateCalc()">
+                            <label for="expKMs">Expected Kms</label>
+                        <% } else { %>
+                            <input type="number" class="form-control" required name="expKMs" id="expKMs" placeholder="KMs" onchange="rateCalc()">
+                            <label for="expKMs">Expected Kms</label>
+                        <% } %>
+                        
+                      </div>
+                      <div class="form-floating">
+                        <input type="number" class="form-control" name="tripTariff" id="tripTariff" value="0">
+                        <label for="tripTariff">Trip Tariff</label>
+                      </div>
+                </div>
+                <div class="col-md-4 formDiv">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" required name="tollAmt" id="tollAmt" placeholder="Total Amount" onchange="rateCalc()">
+                        <label for="tollAmt">Expected Toll Amount</label>
+                      </div>
+                      <div class="form-floating">
+                        <input type="text" class="form-control" required name="driverBata" id="driverBata" placeholder="Driver bata" onchange="rateCalc()">
+                        <label for="driverBata">Driver Bata</label>
+                      </div>
+                </div>
+                <div class="col-md-4 formDiv">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" required name="dayRent" id="dayRent" value="0" onchange="rateCalc()">
+                        <label for="dayRent">Rent Per Day</label>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 formDiv">
+                    <h6>Expected Tariff : </h6>
+                    <input type="text" class="form-control" name="totalTariff" id="totalTariff"></input>
+                </div>
+
+                <div class="col-md-12 formDiv">
+                    <h5 class="tripHead">Customer Details</h5>
+                </div>                                
+                
+                    <div class="col-md-6 formDiv">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" required name="cusName" id="cusName" placeholder="Customer Name">
+                            <label for="cusName">Customer Name</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="Whatsapp" class="form-control" required name="cusAdd" id="cusAdd" placeholder="Address">
+                            <label for="cusAdd">Address</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 formDiv">
+                        <div class="form-floating mb-3">
+                            <input type="tel" class="form-control" required name="cusPhone" id="cusPhone" placeholder="Contact">
+                            <label for="cusPhone">Contact</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="Whatsapp" class="form-control" required name="cusPP" id="cusPP" placeholder="Pickup Point">
+                            <label for="cusPP">Pickup Point</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 formDiv">
+                        <button type="submit" class="btn btn-sm btn-primary">Add Trip</button>
+                    </div>
+                
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    function myFunction() {
+    var x = document.getElementById("vehicleType").value;
+    var y = document.getElementById("acornot").value;
+    console.log(x);
+
+    if (x == "Tempo" && y == "AC"){
+        document.getElementById("ratePerKm").value = 20;
+    }
+    if (x == "Tempo" && y == "NAC"){
+        document.getElementById("ratePerKm").value = 18;
+    }
+    if (x == "14 Seater" && y == "AC"){
+        document.getElementById("ratePerKm").value = 18;
+    }
+    if (x == "14 Seater" && y == "NAC"){
+        document.getElementById("ratePerKm").value = 16;
+    }
+    if (x == "18 Seater" && y == "AC"){
+        document.getElementById("ratePerKm").value = 16;
+    }
+    if (x == "18 Seater" && y == "NAC"){
+        document.getElementById("ratePerKm").value = 14;
+    }
+    if (x == "Xylo" && y == "AC"){
+        document.getElementById("ratePerKm").value = 14;
+    }
+    if (x == "Xylo" && y == "NAC"){
+        document.getElementById("ratePerKm").value = 12;
+    }
+    if (x == "Sunny" && y == "AC"){
+        document.getElementById("ratePerKm").value = 14;
+    }
+    if (x == "Sunny" && y == "NAC"){
+        document.getElementById("ratePerKm").value = 12;
+    }
+      }
+
+    function rateCalc(){
+        
+       
+        var expecKms = Number(document.getElementById("expKMs").value);
+        var ratePerKm = Number(document.getElementById("ratePerKm").value);
+        var tripTariff = Number(document.getElementById("tripTariff").value);
+        var tollAmt = Number(document.getElementById("tollAmt").value);
+        var driverBata = Number(document.getElementById("driverBata").value);
+        var dayRent = Number(document.getElementById("dayRent").value);
+        var tripDays = Number(document.getElementById("tripDays").value);
+
+        var onlyTripExpense = 0;
+        var rentalValue = 0;
+        var totalDriverBata = 0;
+
+        onlyTripExpense = expecKms * ratePerKm;
+        rentalValue =  dayRent * tripDays;
+        totalDriverBata = tripDays * driverBata;
+        var totalExpense = onlyTripExpense + rentalValue + tollAmt + totalDriverBata;
+
+        document.getElementById("totalTariff").value = totalExpense;
+        document.getElementById("tripTariff").value = onlyTripExpense;
+    }  
+
+
+</script>
+
+
+<%- include("partials/footer.ejs") -%>

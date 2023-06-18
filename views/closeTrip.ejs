@@ -1,0 +1,157 @@
+<%- include("partials/header.ejs") -%>
+
+<section id="tariffCalc">
+    <div class="container-fluid cf-tariffCalc">
+        <div class="row">
+            <div class="col-md-12 headDiv">
+                <h1>Close Trip</h1>
+            </div>
+            <form action="/updateTrip/<%=trip._id%>" method="post">
+                <% if (trip) { %>
+                <div class="col-md-6 tripDetailsForm">
+                    <h5 class="tripHead">Trip Details</h5>
+                    <table class="table">
+                        <tbody>
+                          
+                          <tr>
+                            <td>Trip Date</td>
+                            <td class="boldClass"> <%=trip.date.toLocaleString().slice(0,9)%></td>
+                          </tr>
+                          <tr>
+                            <td>From</td>
+                            <td class="boldClass"><%=trip.from%></td>
+                          </tr>
+                          <tr>
+                            <td>To</td>
+                            <td class="boldClass"><%=trip.to%></td>
+                          </tr>
+                          <tr>
+                            <td>Vehicle Type</td>
+                            <td class="boldClass"><%=trip.vehicleType%></td>
+                          </tr>
+                       
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="col-md-6 tripDetailsForm">
+                    <h5 class="tripHead">Customer Details</h5>
+                    <table class="table">
+                        <tbody>
+                           
+                          <tr>
+                            <td>Name</td>
+                            <td class="boldClass"><%=trip.cusName%></td>
+                          </tr>
+                          <tr>
+                            <td>Contact</td>
+                            <td class="boldClass"><%=trip.cusPhone%></td>
+                          </tr>
+                          <tr>
+                            <td>Address</td>
+                            <td class="boldClass"><%=trip.cusAdd%></td>
+                          </tr>
+                          <tr>
+                            <td>Pickup Point</td>
+                            <td class="boldClass"><%=trip.cusPP%></td>
+                          </tr>
+                       
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-12 tariffCol">
+                    <h5 class="tripHead">TRIP SHEET</h5>
+                </div>
+
+              
+
+                    <div class="col-md-6 tariffDetailsCol">
+                        <div class="mb-3">
+                            <label for="actualKms" class="form-label">Total KMS</label>
+                            <input type="number" class="form-control" id="actualKms" name="actualKms" placeholder="Actual Trip KMs">
+                            <div id="passwordHelpBlock" class="form-text">
+                                Estimated Total KMS : <%=trip.distance%> | Estimated Rate per KM : <%=trip.perKM%>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="actDayRent" class="form-label">Day Rent</label>
+                            <input type="number" class="form-control" id="actDayRent" name="actDayRent" placeholder="Total Day Rent">
+                            <div id="passwordHelpBlock" class="form-text">
+                                Estimated Day Rent : <%=trip.dayRent%> / day | No. of Days : <%=trip.stay%>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="actDriverBata" class="form-label">Driver Bata</label>
+                            <input type="number" class="form-control" id="actDriverBata" name="actDriverBata" placeholder="Driver Bata">
+                            <div id="passwordHelpBlock" class="form-text">
+                                Estimated Driver Bata : <%=trip.driverBata%>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="actualToll" class="form-label">Toll Gate</label>
+                            <input type="number" class="form-control" id="actualToll" name="actualToll" placeholder="Actual Toll Amount">
+                            <div id="passwordHelpBlock" class="form-text">
+                                Estimated Total KMS : <%=trip.tollAmt%>
+                            </div>
+                          </div>                        
+                          
+                    </div>
+                    <div class="col-md-6 tariffDetailsCol">
+                        
+                          <div class="mb-3">
+                            <label for="advAmt" class="form-label">Advance Paid</label>
+                            <input type="number" class="form-control" id="advAmt" name="advAmt" value="<%=trip.advanceAmt%>">
+                          </div>
+                          <input type="hidden" name="perKM" value="<%=trip.perKM%>" id="perKM">
+                          <div class="mb-3">
+                            <label for="tripFare" class="form-label">Total Trip Fare</label>
+                            <input type="number" class="form-control" id="tripFare" name="tripFare" placeholder="Trip Fare">
+                            <div id="passwordHelpBlock" class="form-text">
+                                Estimated Trip Amount : <%=trip.estAmt%>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="balTripFare" class="form-label">Balance Amount</label>
+                            <input type="number" class="form-control" id="balTripFare" name="balTripFare" placeholder="Balance Trip Fare">
+                            <div id="passwordHelpBlock" class="form-text">
+                                <!-- Estimated Trip Amount : <%=trip.estAmt%> -->
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <a onclick="tripRateCalc()"><i class="bi bi-calculator"></i></A>
+                            <button type="submit" class="btn btn-sm btn-warning">Update</a>
+                            <!-- <a href="/finishTrip/<%=trip._id%>" type="button" class="btn btn-sm btn-success">Close Trip</a> -->
+                          </div>      
+                    </div>
+                      
+                 
+
+                <% } %>
+              </form>
+        </div>
+    </div>
+</section>
+
+
+<%- include("partials/footer.ejs") -%>
+
+<script>
+    function tripRateCalc(){
+        var totalKms = Number(document.getElementById("actualKms").value);
+        var ratePerKm = Number(document.getElementById("perKM").value);
+        var tollAmt = Number(document.getElementById("actualToll").value);
+        var driverBata =Number(document.getElementById("actDriverBata").value);
+        var dayRent = Number(document.getElementById("actDayRent").value);
+        var advanceAmt = Number(document.getElementById("advAmt").value);
+
+        var totalTripFare = (totalKms * ratePerKm) + tollAmt + driverBata + dayRent
+        var balTripFare = totalTripFare - advanceAmt;
+
+        document.getElementById("tripFare").value = totalTripFare;
+        document.getElementById("balTripFare").value = balTripFare;
+
+    }
+
+    
+</script>

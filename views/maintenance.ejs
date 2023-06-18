@@ -1,0 +1,82 @@
+<%- include("partials/header.ejs") -%>
+
+<section id="maintenance">
+    <div class="container-fluid cf-maintenance">
+        <div class="row">
+            <div class="col-md-12 ledgerDiv">
+                <h2 class="ledgerHead">LEDGER</h2>
+            </div>
+            <div class="col-md-6 formDiv">
+                <form action="/newLedgerEntry" method="post" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" name="ledgerDate" id="ledgerDate" placeholder="">
+                        <label for="ledgerDate">Journey Date</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" name="vehicleSelected" id="vehicleSelected" aria-label="Floating label select example">
+                          <option selected>Choose a Vehicle</option>
+                          <% if (garages) { %>
+                            <% garages.forEach(garage => { %>
+                          <option value="<%=garage._id%>"><%=garage.name%></option>
+                            <% }) %>
+                          <% } %>  
+                        </select>
+                        <label for="vehicleSelected">Choose the Trips below</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" name="particulars" id="particulars" onchange="myFunc()" aria-label="Floating label select example">
+                            <option selected>Choose a type</option>
+                            <option value="tripAmount">Trip Amount</option>
+                            <option value="tyreChange">Tyre Change</option>
+                            <option value="insurance">Insurance</option>
+                            <option value="tax">Tax</option>
+                            <option value="FC">FC</option>
+                          </select>
+                          <label for="particulars">Choose the type</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="details" id="details" placeholder="">
+                        <label for="details">Details if any</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="ledgerCredit" id="ledgerCredit" placeholder="">
+                        <label for="ledgerCredit">Credit</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="ledgerDebit" id="ledgerDebit" placeholder="">
+                        <label for="ledgerDebit">Debit</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control" name="billCopy" id="billCopy" placeholder="">
+                        <label for="billCopy">Supportive Documents if any</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <button type="submit" class="btn-sm btn btn-warning">Submit</button>
+                    </div>
+                </form>
+            </div>   
+        </div>
+    </div>
+</section>
+
+
+<%- include("partials/footer.ejs") -%>
+
+<script>
+
+window.addEventListener('load', function() {
+            document.getElementById('ledgerCredit').disabled = true;
+            document.getElementById('ledgerDebit').disabled = true;
+})
+
+    function myFunc(){
+        if(document.getElementById('particulars').value == "tripAmount"){
+            document.getElementById('ledgerCredit').disabled = false;
+            document.getElementById('ledgerDebit').disabled = true;
+        }
+        else{
+            document.getElementById('ledgerCredit').disabled = true;
+            document.getElementById('ledgerDebit').disabled = false;
+        }
+    }
+</script>

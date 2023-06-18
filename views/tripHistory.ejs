@@ -1,0 +1,164 @@
+<%- include("partials/header.ejs") -%>
+
+<section id="upcomingTrips">
+    <div class="container-fluid cf-tariffCalc">
+        <div class="row">
+            <div class="col-md-12 headDiv">
+                <h1>Completed Trips</h1>
+            </div>
+
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Trip Date</th>
+                        <th scope="col">From</th>
+                        <th scope="col">To</th>
+                        <th scope="col">Details</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Contact</th>
+                        <th scope="col">Add Expense</th>
+                        <th scope="col">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% if (trips) { %>
+                            <% trips.forEach(trip => { %>
+                                <% if(trip.paymentDone == "Yes") { %>
+                      <tr>
+                        <td><%=trip.date.toLocaleString().slice(0,9)%></td>
+                        <td><%=trip.from%></td>
+                        <td><%=trip.to%></td>
+                        <td>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-<%=trip._id%>">
+                                Trip Details
+                              </button>
+                              
+                              <!-- Modal -->
+                              <div class="modal fade" id="exampleModal-<%=trip._id%>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5" id="exampleModalLabel">Trip Details</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <table class="table">
+                                        <tr>
+                                            <td>Total KMs</td>
+                                            <td><%=trip.distance%>Kms</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tariff per KM</td>
+                                            <td>&#8377;<%=trip.perKM%></td>
+                                        </tr> 
+                                        <tr>
+                                          <td>Trip Tariff</td>
+                                          <td>&#8377;<%=trip.tripTariff%>.00</td>
+                                      </tr>
+                                        <tr>
+                                            <td>Toll Amount</td>
+                                            <td>&#8377;<%=trip.tollAmt%>.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Driver Bata</td>
+                                            <td>&#8377;<%=trip.driverBata%>.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vehicle Rent</td>
+                                            <td>&#8377;<%=trip.dayRent%>.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Trip Amount</td>
+                                            <td><strong>&#8377;<%=trip.totalTripAmt%>.00</strong></td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                        </td>
+                        <td><%=trip.cusName%></td>
+                        <td><%=trip.cusPhone%></td>
+                        <!-- Add Expense -->
+                        <td>
+                          <% if (trip.expUpdated == "Yes") { %>
+                            <!-- Button trigger modal -->
+                          <button type="button" class="btn disabled btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#tripExpense-<%=trip._id%>">
+                            Trip Expenses
+                          </button>
+                          <% } else { %>
+                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tripExpense-<%=trip._id%>">
+                              Trip Expenses
+                            </button>
+                          <% } %>
+                          
+                          <!-- Modal -->
+                          <div class="modal fade" id="tripExpense-<%=trip._id%>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Received Full Payment?</h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <form action="/expenseUpdate/<%=trip._id%>" method="post">
+                                    <div class="form-floating">
+                                      <input type="number" class="form-control" name="driverBata" id="driverBata" placeholder="">
+                                      <label for="driverBata">Driver Bata</label>
+                                    </div>
+                                    <div id="passwordHelpBlock" class="form-text mb-3">
+                                      Expected Driver Bata: <%=trip.driverBata%>
+                                  </div>
+                                  <input type="hidden" name="totalTripAmt" value="<%=trip.totalTripAmt%>">
+                                  <div class="form-floating">
+                                    <input type="number" class="form-control" name="dieselCost" id="dieselCost" placeholder="">
+                                    <label for="dieselCost">Diesel Cost</label>
+                                  </div>
+                                  <div id="passwordHelpBlock" class="form-text mb-3">
+                                    Enter Diesel Cost Value
+                                </div>
+                                <div class="form-floating">
+                                  <input type="number" class="form-control" name="tollAmt" id="tollAmt" placeholder="">
+                                  <label for="tollAmt">Toll Amount</label>
+                                </div>
+                                <div id="passwordHelpBlock" class="form-text  mb-3">
+                                  Expected Toll Amount : <%=trip.tollAmt%>
+                              </div>
+                                  <div>
+                                    <button type="submit" class="btn btn-sm btn-success">Update</button>
+                                  </div>
+                                  </form>
+                                </div>
+                                <div class="modal-footer mb-3">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </td>
+                        <td><a href="/tripDeletion/<%=trip._id%>" type="button" class="btn btn-sm btn-danger">X</a></td>
+                      </tr>
+                      <% } %>   
+                   <% }) %>
+                  
+                   <% } %>
+
+                 
+                    </tbody>
+                </table>
+
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<%- include("partials/footer.ejs") -%>

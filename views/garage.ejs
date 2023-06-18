@@ -1,0 +1,61 @@
+<%- include("partials/header.ejs") -%>
+
+<section id="garage">
+    <div class="container-fluid cf-garage">
+        <div class="row">
+            <div class="col-md-12 headCol">
+                <h1>GARAGE</h1>
+            </div>
+            <div class="col-md-4 garageDiv">
+                <h3>Add New Vehicle</h3>
+                <form action="/newVehicle" method="post">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" name="vehicleName" id="vehicleName" placeholder="">
+                      <label for="tripDate">Vehicle Number</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="seat" id="seat" placeholder="">
+                        <label for="seat">Seat Capacity</label>
+                      </div>
+                  <div>
+                    <button type="submit" class="btn btn-sm btn-success">Update</button>
+                  </div>
+                  </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="garageList">
+    <div class="container-fluid cf-garageList">
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Vehicle Number</th>
+                        <th scope="col">Capacity</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% if (garages) { %>
+                            <% garages.forEach(garage => { %>
+                             <tr>
+                                <td><%=garage.name%></td>
+                                <td><%=garage.seat%></td>
+                                <td>Edit</td>
+                                <td><a href="/deleteVehicle/<%=garage._id%>" type="button" class="btn btn-sm btn-danger">Del</a></td>
+                             </tr>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<%- include("partials/footer.ejs") -%>
