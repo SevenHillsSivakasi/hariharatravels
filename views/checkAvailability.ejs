@@ -1,0 +1,92 @@
+<%- include("partials/header.ejs") -%>
+
+
+<section id="ledger">
+    <div class="container-fluid cf-maintenance">
+        <div class="row">
+            <div class="col-md-12 ledgerDiv">
+                <h2>Check Availaibility</h2>
+            </div>
+            <div class="col-md-6" style="padding: 2% !important;">
+                <form action="/getUpcomingTrips" method="post">
+                    <div class="form-floating  mb-3">
+                        <select class="form-select" required name="vehicle" id="vehicle" aria-label="vehicleType">
+                            <option disabled selected>Select</option>
+                            <% if (garage) { %>
+                             <% garage.forEach(vehicle => { %>
+                                <option value="<%=vehicle.name%>"><%=vehicle.name%></option>
+                                
+                             <% }) %>
+                            <% } %>
+                        </select>
+                        <label for="vehicle">Choose Vehicle</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" name="from" id="from" placeholder="">
+                        <label for="from">Journey Date</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <input type="date" class="form-control" name="to" id="to">
+                        <label for="to">End Date</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <button type="submit" class="btn btn-sm btn-primary">Get Schedules</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section id="tripsList">
+    <div class="container-fluid">
+        <div class="row">
+            <% if (tripsList.length>0) { %>
+            <div class="col-md-6" style="margin: auto;">
+                <h2 style="text-align: center;"><%=vehicle%> <br> Upcoming Trip Days</h2>
+                <h6 style="text-align: center;">From <span style="color: red; font-weight: bold;"><%=fromDate%></span> To <span style="color: red; font-weight: bold;"><%=toDate%></span></h6>
+                <table class="table" style="margin: 5% !important;">
+                    <tbody>
+                        <tr>
+                            <td>Trip ID</td>
+                            <td>From</td>
+                            <td>To</td>
+                        </tr>
+                        
+                         <% tripsList.forEach(trip => { %>
+                          
+                            <tr>
+                                <td><%=trip.tripID%></td>
+                                <td><%=trip.dateFrom.toISOString().slice(0,10)%></td>
+                                <td><%=trip.dateTo.toISOString().slice(0,10)%></td>
+                                
+                            </tr>    
+
+                         <% }) %>
+                        
+                        
+                    </tbody>
+                </table>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include("partials/footer.ejs") -%>

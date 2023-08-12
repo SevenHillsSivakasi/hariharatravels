@@ -17,13 +17,17 @@
                 <div class="col-md-6 formDiv">
                    
                     <div class="form-floating mb-3">
-                        <input type="date" required class="form-control" name="journeyDate" id="tripDate" placeholder="">
-                        <label for="tripDate">Journey Date</label>
-                      </div>
-                      <div class="form-floating">
+                        <input type="date" required class="form-control" name="startDate" id="startDate" placeholder="">
+                        <label for="startDate">Journey Start Date</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="date" required class="form-control" name="endDate" id="endDate" placeholder="" onfocusout="daysCalc()">
+                        <label for="endDate">Journey End Date</label>
+                    </div>
+                    <div class="form-floating">
                         <input type="number" class="form-control" name="tripDays" id="tripDays" placeholder="No. of days" value="1"  onchange="rateCalc()">
                         <label for="tripDays">Trip Duration</label>
-                      </div>
+                    </div>
                 </div>
                 <div class="col-md-6 formDiv">
                     <div class="form-floating mb-3">
@@ -44,6 +48,12 @@
                             <label for="to">To</label>
                         <% } %>
                       </div>
+                      <div class="form-floating mb-3 disabled">
+                        
+                        <input type="text" class="form-control disabled" disabled>
+                        <label></label>
+                   
+                  </div>
                 </div>
                 <div class="col-md-4 formDiv">
                     <div class="form-floating  mb-3">
@@ -78,21 +88,28 @@
                             <input type="number" class="form-control" required name="expKMs" id="expKMs" placeholder="KMs" onchange="rateCalc()">
                             <label for="expKMs">Expected Kms</label>
                         <% } %>
-                        
-                      </div>
-                      <div class="form-floating">
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" name="permitCharge" id="permitCharge" value="0" onchange="rateCalc()">
+                        <label for="permitCharge">Permit Charge</label>
+                    </div>
+                    <div class="form-floating">
                         <input type="number" class="form-control" name="tripTariff" id="tripTariff" value="0">
                         <label for="tripTariff">Trip Tariff</label>
-                      </div>
+                    </div>
                 </div>
                 <div class="col-md-4 formDiv">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" required name="tollAmt" id="tollAmt" placeholder="Total Amount" onchange="rateCalc()">
                         <label for="tollAmt">Expected Toll Amount</label>
                       </div>
-                      <div class="form-floating">
+                      <div class="form-floating mb-3">
                         <input type="text" class="form-control" required name="driverBata" id="driverBata" placeholder="Driver bata" onchange="rateCalc()">
                         <label for="driverBata">Driver Bata</label>
+                      </div>
+                      <div class="form-floating">
+                        <input type="text" class="form-control" required name="hillCharge" id="hillCharge" placeholder="Hill Charges" onchange="rateCalc()">
+                        <label for="hillCharge">Hill Charges</label>
                       </div>
                 </div>
                 <div class="col-md-4 formDiv">
@@ -106,6 +123,7 @@
                     <h6>Expected Tariff : </h6>
                     <input type="text" class="form-control" name="totalTariff" id="totalTariff"></input>
                 </div>
+                
 
                 <div class="col-md-12 formDiv">
                     <h5 class="tripHead">Customer Details</h5>
@@ -139,7 +157,7 @@
         </div>
     </div>
 </section>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js" integrity="sha512-8Z5++K1rB3U+USaLKG6oO8uWWBhdYsM3hmdirnOEWp8h2B1aOikj5zBzlXs8QOrvY9OxEnD2QDkbSKKpfqcIWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 
     function myFunction() {
@@ -189,6 +207,8 @@
         var driverBata = Number(document.getElementById("driverBata").value);
         var dayRent = Number(document.getElementById("dayRent").value);
         var tripDays = Number(document.getElementById("tripDays").value);
+        var hillCharge = Number(document.getElementById("hillCharge").value);
+        var permitCharge = Number(document.getElementById("permitCharge").value)
 
         var onlyTripExpense = 0;
         var rentalValue = 0;
@@ -197,11 +217,24 @@
         onlyTripExpense = expecKms * ratePerKm;
         rentalValue =  dayRent * tripDays;
         totalDriverBata = tripDays * driverBata;
-        var totalExpense = onlyTripExpense + rentalValue + tollAmt + totalDriverBata;
+        var totalExpense = onlyTripExpense + rentalValue + tollAmt + totalDriverBata + hillCharge + permitCharge;
 
         document.getElementById("totalTariff").value = totalExpense;
         document.getElementById("tripTariff").value = onlyTripExpense;
-    }  
+    } 
+    
+    function daysCalc(){
+
+        var date1 = $("#startDate").val();
+        
+        var date2 = $("#endDate").val();
+        
+        var diffDays =  new Date(date2) - new Date(date1); 
+        
+        var daysCount = diffDays / (86400*1000);
+        
+        document.getElementById('tripDays').value = daysCount;
+    }
 
 
 </script>

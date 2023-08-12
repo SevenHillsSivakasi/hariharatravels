@@ -44,8 +44,8 @@
                           <option disabled selected>Select</option>
                           <% if (garages) { %>
                            <% garages.forEach(vehicle => { %>
-                              <option value="<%=vehicle._id%>"><%=vehicle.name%></option>
-                              <input type="hidden" name="garageName" value="<%=vehicle.name%>">
+                              <option value="<%=vehicle.name%>"><%=vehicle.name%></option>
+                              
                            <% }) %>
                           <% } %>
                       </select>
@@ -67,32 +67,5 @@
       </div>
   </div>
 </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <%- include("partials/footer.ejs") -%>

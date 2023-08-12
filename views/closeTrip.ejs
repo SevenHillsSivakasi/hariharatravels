@@ -14,8 +14,12 @@
                         <tbody>
                           
                           <tr>
-                            <td>Trip Date</td>
-                            <td class="boldClass"> <%=trip.date.toLocaleString().slice(0,9)%></td>
+                            <td>Trip Start Date</td>
+                            <td class="boldClass"> <%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
+                          </tr>
+                          <tr>
+                            <td>Trip End Date</td>
+                            <td class="boldClass"> <%=trip.dateTo.toLocaleString().slice(0,9)%></td>
                           </tr>
                           <tr>
                             <td>From</td>
@@ -55,6 +59,10 @@
                             <td>Pickup Point</td>
                             <td class="boldClass"><%=trip.cusPP%></td>
                           </tr>
+                          <tr>
+                            <td>Total Days</td>
+                            <td class="boldClass"><%=trip.stay%></td>
+                          </tr>
                        
                         </tbody>
                     </table>
@@ -67,6 +75,15 @@
               
 
                     <div class="col-md-6 tariffDetailsCol">
+
+                      <div class="mb-3">
+                        <label for="startingKm" class="form-label">Starting KM</label>
+                        <input type="number" class="form-control" id="startingKm" name="startingKm" placeholder="Starting KM">
+                      </div>
+                      <div class="mb-3">
+                        <label for="endingKm" class="form-label">Ending KM</label>
+                        <input type="number" class="form-control" id="endingKm" name="endingKm" placeholder="Ending KM" onfocusout="calcKM()">
+                      </div>
                         <div class="mb-3">
                             <label for="actualKms" class="form-label">Total KMS</label>
                             <input type="number" class="form-control" id="actualKms" name="actualKms" placeholder="Actual Trip KMs">
@@ -88,17 +105,18 @@
                                 Estimated Driver Bata : <%=trip.driverBata%>
                             </div>
                           </div>
-                          <div class="mb-3">
-                            <label for="actualToll" class="form-label">Toll Gate</label>
-                            <input type="number" class="form-control" id="actualToll" name="actualToll" placeholder="Actual Toll Amount">
-                            <div id="passwordHelpBlock" class="form-text">
-                                Estimated Total KMS : <%=trip.tollAmt%>
-                            </div>
-                          </div>                        
+                                                 
                           
                     </div>
                     <div class="col-md-6 tariffDetailsCol">
                         
+                      <div class="mb-3">
+                        <label for="actualToll" class="form-label">Toll Gate</label>
+                        <input type="number" class="form-control" id="actualToll" name="actualToll" placeholder="Actual Toll Amount">
+                        <div id="passwordHelpBlock" class="form-text">
+                            Estimated Toll Amount : <%=trip.tollAmt%>
+                        </div>
+                      </div> 
                           <div class="mb-3">
                             <label for="advAmt" class="form-label">Advance Paid</label>
                             <input type="number" class="form-control" id="advAmt" name="advAmt" value="<%=trip.advanceAmt%>">
@@ -135,6 +153,7 @@
 
 
 <%- include("partials/footer.ejs") -%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js" integrity="sha512-8Z5++K1rB3U+USaLKG6oO8uWWBhdYsM3hmdirnOEWp8h2B1aOikj5zBzlXs8QOrvY9OxEnD2QDkbSKKpfqcIWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
     function tripRateCalc(){
@@ -151,6 +170,13 @@
         document.getElementById("tripFare").value = totalTripFare;
         document.getElementById("balTripFare").value = balTripFare;
 
+    }
+
+    function calcKM(){
+      var startingKm = Number(document.getElementById("startingKm").value);
+      var endingKm = Number(document.getElementById("endingKm").value);
+      var totalKms = endingKm - startingKm;
+      document.getElementById("actualKms").value = totalKms;
     }
 
     

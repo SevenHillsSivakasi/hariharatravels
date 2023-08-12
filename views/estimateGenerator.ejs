@@ -99,7 +99,7 @@
   <div class="container-fluid" style="padding: 3% 3% 1% !important;">
     <div class="row">
       <div class="fullColumn">
-        <h2 style="font-weight: bold; margin: 0; text-align: center;"><span style=" border-radius: 10px; background-color: #242424; color:white; padding:2px 6px;">BILL</span></h2><br>
+        <h2 style="font-weight: bold; margin: 0; text-align: center;"><span style=" border-radius: 10px; background-color: #242424; color:white; padding:2px 6px;">ESTIMATE</span></h2><br>
       </div>
       
       <div class="fullColumn" style="padding-top: 1.65%; padding-bottom:0% !important; text-align:center; background-color:white; border:black 2px solid; ">      
@@ -113,7 +113,6 @@
       </div>
       <div class="fullColumn">
         <h2 style="font-weight: bold; margin: 25px 0px 0px !important; text-align: center;"><span style="border-radius: 10px; background-color: #242424; color:white; padding:2px 6px;">TRIP DETAILS</span></h2><br>
-        <h2 style="font-weight: bold; text-align: center;"><span style="border-radius: 10px;  padding:2px 6px;">TRIP ID : <%=bill.tripID%></span></h2><br>
       </div>
       <div class="halfColumn" style="padding-top: 1.5%; padding-bottom:0% !important; padding-left: 2% !important; border-top:black 2px solid;border-left:black 2px solid;border-bottom:black 2px solid;">
         <table class="table">
@@ -140,10 +139,6 @@
       <div class="halfColumn" style="padding-top: 1.65%; padding-bottom:0% !important; text-align:center; background-color:white; border-top:black 2px solid;border-right:black 2px solid;border-bottom:black 2px solid; ">      
         <table class="table">
           <tbody>
-            <tr>
-                <td>Driver</td>
-                <td><strong><%=bill.stay%></strong></td>
-              </tr>
             <tr>
               <td>Trip Vehicle</td>
               <td><strong><%=vehicleName%></strong></td>
@@ -196,49 +191,20 @@
               <td><strong>&#8377;<%=bill.dayRent%>.00</strong></td>
             </tr>
             <tr>
-                <td>Hill Charge</td>
-                <td><strong>&#8377;<%=bill.hillCharge%>.00</strong></td>
-              </tr>
-              <tr>
-                <td>Permit Amount</td>
-                <td><strong>&#8377;<%=bill.permitAmount%>.00</strong></td>
-              </tr>
+              <td>Total Trip Amount</td>
+              <td><strong>&#8377;<%=bill.estAmt%>.00</strong></td>
+            </tr>
           </tbody>
         </table>
       </div>
       <!-- <div class="fullColumn">
         <h2 style="font-weight: bold; margin: 25px 0px 0px !important; text-align: left;"><span style="border-radius: 10px; background-color: #242424; color:white; padding:2px 6px;">Amount in Words:</span></h2><br>
       </div> -->
-      <div class="fullColumn">
-        <h2 style="font-weight: bold; margin: 25px 0px 0px !important; text-align: center;"><span style="border-radius: 10px; background-color: #242424; color:white; padding:2px 6px;">Payment Status</span></h2><br>
-      </div>
-      <div class="halfColumn" style="padding-top: 1.5%; padding-bottom:0% !important; padding-left: 2% !important; border-top:black 2px solid;border-left:black 2px solid;border-bottom:black 2px solid;">
-        <h4 style="color: white;">some junk test</h4>
-      </div>
-      <div class="halfColumn" style="padding-top: 1.65%; padding-bottom:0% !important; text-align:right !important; background-color:white; border-top:black 2px solid;border-right:black 2px solid;border-bottom:black 2px solid; ">  
-     
-        <table class="table">
-          <tbody>
-            <tr>
-              <td>Total Trip Amount</td>
-              <td><strong>&#8377;<%=bill.totalTripAmt%>.00</strong></td>
-            </tr>
-            <tr>
-              <td>Advance</td>
-              <td><strong>&#8377;<%=bill.advanceAmt%>.00</strong></td>
-            </tr>
-            <tr>
-              <td>Balance</td>
-              <td><strong>&#8377;<%=bill.balanceAmt%>.00</strong></td>
-            </tr>
-           
-          </tbody>
-        </table>
-   
-    </div>
+    
     <div class="fullColumn" style="padding: 3% !important; text-align: center !important;">
       <h3>Thank you for choosing us !!!</h3>
-      <h3>Please Give us your feedback at 8056666616</h3>
+      <h3>Waiting to serve you soon...!!!</h3>
+      <h6>This Estimate Tariff Details are subject to change as these values are mere expectation values. Exact Tariff will be provide only after the trip over.</h6>
     </div>
 </div>
 

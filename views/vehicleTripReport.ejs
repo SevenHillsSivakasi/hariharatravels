@@ -1,0 +1,158 @@
+<%- include("partials/header.ejs") -%>
+
+<section id="upcomingTrips">
+    <div class="container-fluid cf-tariffCalc">
+        <div class="row">
+            <div class="col-md-12 headDiv" style="background-color:green !important;">
+                <h1>Trip Report - <%=vehicle%></h1>
+                <h5>From : <%=dateFrom%> | To : <%=dateTo%></h5>
+
+                
+
+                <table class="table table-light" style="width:50%; margin:auto !important; margin-bottom: 2% !important; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: bold;">
+                    <tbody>
+                    <tr>
+                        <td>Total Trips</td>
+                        <td><%=trips.length%></td>
+                    </tr>
+                    <tr>
+                        <td>Total KMs</td>
+                        <td><%=totalKms%></td>
+                    </tr>
+                    <tr>
+                        <td>Total Trip Collection</td>
+                        <td>&#8377; <%=totalTripAmt%></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <a href="/history" role="button" class="btn btn-sm btn-primary" style="margin-bottom: 2%; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Back to Trips History</a>
+
+            </div>
+
+            <div class="col-md-12">
+                <table class="table table-warning">
+                    <thead>
+                      <tr>
+                        <th scope="col">Trip ID</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">From</th>
+                        <th scope="col">To</th>
+                        <th scope="col">Details</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Contact</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% if (trips) { %>
+                            <% trips.forEach(trip => { %>
+                                <% if(trip.paymentDone == "Yes") { %>
+                      <tr>
+                        <td><%=trip.tripID%></td>
+                        <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
+                        <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
+                        <td><%=trip.from%></td>
+                        <td><%=trip.to%></td>
+                        <td>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-<%=trip._id%>">
+                                Trip Details
+                              </button>
+                              
+                              <!-- Modal -->
+                              <div class="modal fade" id="exampleModal-<%=trip._id%>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5" id="exampleModalLabel">Trip Details</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <table class="table">
+                                        <tr>
+                                            <td>Total KMs</td>
+                                            <td><%=trip.distance%>Kms</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tariff per KM</td>
+                                            <td>&#8377;<%=trip.perKM%></td>
+                                        </tr> 
+                                        <tr>
+                                          <td>Trip Tariff</td>
+                                          <td>&#8377;<%=trip.tripTariff%>.00</td>
+                                      </tr>
+                                        <tr>
+                                            <td>Toll Amount</td>
+                                            <td>&#8377;<%=trip.tollAmt%>.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Driver Bata</td>
+                                            <td>&#8377;<%=trip.driverBata%>.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vehicle Rent</td>
+                                            <td>&#8377;<%=trip.dayRent%>.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Trip Amount</td>
+                                            <td><strong>&#8377;<%=trip.totalTripAmt%>.00</strong></td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                        </td>
+                        <td><%=trip.cusName%></td>
+                        <td><%=trip.cusPhone%></td>
+                       
+                      </tr>
+                      <% } %>   
+                   <% }) %>
+                  
+                   <% } %>
+
+                 
+                    </tbody>
+                </table>
+
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include("partials/footer.ejs") -%>

@@ -110,10 +110,13 @@ router.get('/deleteVehicle/:id', function(req,res,next){
 })
 
 router.post('/saveTrip', function(req,res,next){
-  console.log(req.body);
+  
+  var tripID = "T-" + req.body.cusPhone.slice(6,10);
   
   var newTrip = Trip({
-    date:req.body.journeyDate,
+    tripID:tripID,
+    dateFrom:req.body.startDate,
+    dateTo:req.body.endDate,
     from:req.body.from,
     to:req.body.to,
     distance:req.body.expKMs,
@@ -125,6 +128,8 @@ router.post('/saveTrip', function(req,res,next){
     tripTariff:req.body.tripTariff,
     tollAmt:req.body.tollAmt,
     driverBata:req.body.driverBata * req.body.tripDays,
+    hillCharge:req.body.hillCharge,
+    permitAmount:req.body.permitCharge,
     estAmt:req.body.totalTariff,
     cusName:req.body.cusName,
     cusAdd:req.body.cusAdd,
@@ -152,6 +157,8 @@ router.get('/newTrip', function(req,res,next){
 router.post('/updateTrip/:id', function(req,res,next){
   var id = req.params.id;
 
+  var startingKm = req.body.startingKm;
+  var endingKm = req.body.endingKm;
   var actTotalKms = req.body.actualKms;
   var actDayRent = req.body.actDayRent;
   var actDriverBata = req.body.actDriverBata;
@@ -165,7 +172,9 @@ router.post('/updateTrip/:id', function(req,res,next){
   Trip.findByIdAndUpdate(
     {_id:id},
     {$set : {
-      closeTrip:"Yes",
+      startingKm : startingKm,
+      endingKm : endingKm,
+      tripOver:"Yes",
       distance:actTotalKms,
       dayRent:actDayRent,
       driverBata:actDriverBata,
@@ -211,7 +220,8 @@ router.post('/assignDriver/:id', function(req,res,next){
   Trip.findByIdAndUpdate(id,
     {$set:{
       driverName:req.body.driverName,
-      driverNum:req.body.driverNum
+      driverNum:req.body.driverNum,
+      driverAssigned:1
     }})
     .then(()=>{
       res.redirect('/');
@@ -224,10 +234,11 @@ router.post('/assignDriver/:id', function(req,res,next){
 
 router.post('/assignVehicle/:id', function(req,res,next){
   var id = req.params.id;
-  
+
   Trip.findByIdAndUpdate(id,
     {$set:{
-      vehicleNo:req.body.vehicleSelection
+      vehicleNo:req.body.vehicleSelection,
+      vehicleAssigned:1
     }})
     .then(()=>{
       res.redirect('/');
@@ -262,8 +273,8 @@ router.post('/paymentUpdate/:id', function(req,res,next){
     var balance = pendingPayment - receivedPayment;
     var updatedAdvance = result.advanceAmt + receivedPayment;
     console.log("The Balance is " + balance);
-    if(balance === 0){
-      Trip.updateOne({_id:result._id},{$set:{paymentDone:"Yes", balanceAmt:0}})
+    if(balance <= 0){
+      Trip.updateOne({_id:result._id},{$set:{closeTrip:"Yes", paymentDone:"Yes", balanceAmt:0}})
       .then(()=>{res.redirect('/');})
       .catch(err=>{console.log(err); res.redirect('/')});
     }
@@ -311,7 +322,13 @@ router.get('/history', function(req,res,next){
   Trip.find({paymentDone:"Yes"})
   .then(result => {
     console.log(result)
-    res.render('tripHistory', {title: "Trip History | Harihara Travels", trips:result});
+
+    Garage.find()
+    .then(resultt=>{  
+      res.render('tripHistory', {title: "Trip History | Harihara Travels", trips:result,garages:resultt});
+    })
+
+    
   })
   .catch(err =>{
     console.log("The Error is " + err);
@@ -478,6 +495,39 @@ router.post('/tripsList', function(req,res,next){
 
 })
 
+router.post('/getTripList', function(req,res,next){
+  var vehicle = req.body.vehicle;
+  var from = req.body.from;
+  var to = req.body.to;
+
+  Trip.find({
+
+    $and:[
+
+      {dateFrom:{
+        $gte:from,
+        $lt:to
+      }},
+      {
+        vehicleNo:vehicle}
+    ]
+   
+})
+  .then(result=>{
+
+    var totalKms = 0;
+    var totalTripAmt = 0;
+
+    result.forEach(trip=>{
+      totalKms = 0 + Number(trip.distance);
+      totalTripAmt = 0 + Number(trip.totalTripAmt);
+    })
+
+    res.render('vehicleTripReport',{title:'Vehicle Trips Report',trips:result, vehicle:vehicle, dateFrom:from, dateTo:to, totalKms:totalKms, totalTripAmt:totalTripAmt});
+  })
+
+})
+
 router.post('/expenseUpdate/:id', function(req,res,next){
   var id = req.params.id;
 
@@ -486,12 +536,24 @@ router.post('/expenseUpdate/:id', function(req,res,next){
     var driverBata = Number(req.body.driverBata);
     var expDiesel = Number(req.body.dieselCost);
     var tollAmt = Number(req.body.tollAmt);
-    var tripExpenses = driverBata + expDiesel + tollAmt;
-    var netProfit = req.body.totalTripAmt - tripExpenses;
+    var driverPadi = Number(req.body.driverPadi);
+    var miscExp = Number(req.body.miscExp);
+    var tripExpenses = driverBata + expDiesel + tollAmt + driverPadi + miscExp;
+    var netProfit = Number(req.body.totalTripAmount) - Number(tripExpenses);
+
+
+    // console.log(req.body.totalTripAmount);
+    // console.log("expDiesel: " + expDiesel);
+    // console.log("Toll Amount: " + tollAmt);
+    // console.log("Misc Exp: " + miscExp);
+    // console.log("Driver Padi  : " + driverPadi);
+    // console.log("tripExpenses: " + tripExpenses);
+    // console.log(netProfit);
 
     Trip.findByIdAndUpdate(id, {
       $set : {
         driverBata: req.body.driverBata,
+        driverPadi: req.body.driverPadi,
         expDiesel: req.body.dieselCost,
         tollAmt:req.body.tollAmt,
         tripExpenses:tripExpenses,
@@ -573,15 +635,15 @@ router.post('/newLedgerEntry', upload.single('billCopy'), function(req,res,next)
 
 router.post('/getLedger', function(req,res,next){
   
-  var vehicleID = new mongoose.Types.ObjectId( req.body.vehicle); 
+  var vehicleID = req.body.vehicle; 
   var vehicleName = req.body.garageName;
-  console.log(vehicleID, vehicleName, req.body.from, req.body.to);
+  // console.log(vehicleID, vehicleName, req.body.from, req.body.to);
 
   Ledger
   .find(
     
         {
-          'vehicle': vehicleID,
+          'name': vehicleID,
           ledgerDate: {
             $gte: req.body.from,
             $lt: req.body.to
@@ -608,137 +670,319 @@ router.post('/getLedger', function(req,res,next){
 
 })
 
-// router.get('/generateBill/:id', function(req,res,next){
-//   var id = req.params.id;
-//   Trip.findById(id)
-//   .then((result)=>{
+router.get('/checkAvailability', function(req,res,next){
+  Garage.find()
+  .then(result=>{
+    res.render('checkAvailability',{title:'Harihara Travels', garage:result, tripsList:{}});
+  })
+})
 
-//     Garage.findById(result.vehicleNo).then(veh=>{
+router.post('/getUpcomingTrips', function(req,res,next){
+  
+  var vehicle = req.body.vehicle;
+  var from = req.body.from;
+  var to = req.body.to;
 
-//       var fileName = './result.pdf';
-  
-//       res.render('billGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
-        
-//         if(err){
-//           return console.log(err);
-//         }
-  
-//       (async () => {
-  
+  Trip.find({
 
-//         // Xvfb.startSync((err)=>{if (err) console.error(err)});
-      
-//         const PCR = require("puppeteer-chromium-resolver");
-//         const puppeteer = require('puppeteer');
-//         const option = {
-//           revision: "",
-//           detectionPath: "",
-//           folderName: ".chromium-browser-snapshots",
-//           defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
-//           hosts: [],
-//           cacheRevisions: 2,
-//           retry: 3,
-//           silent: false
-//       };
-  
-//       const stats = PCR.getStats(option);
+    $and:[
 
-  
-//       if(stats){
-//         const browser = await stats.puppeteer.launch({
-//             headless:false,
-//             args: ['--no-sandbox','--disable-setuid-sandbox'],
-//             executablePath: stats.executablePath
-//           }); 
-  
-//             // create a new page
-//             const page = await browser.newPage();
-  
-//             // Configure the navigation timeout
-//             await page.setDefaultNavigationTimeout(0);
-  
-//            await page.setCacheEnabled(false); 
-//            // set your html as the pages content
-            
-//             await page.setContent(html, {
-//               waitUntil: 'domcontentloaded'
-//             })
-//             await page.emulateMediaType('screen');
+      {dateFrom:{
+        $gte:from,
+        $lt:to
+      }},
+      {
+        vehicleNo:vehicle},
+      {
+        tripOver:"No"
+      }
+    ]
+   
+  })
+  .then(result=>{
+    console.log(result);
+    Garage.find()
+    .then(resultt=>{
+      res.render('checkAvailability',{title:'Harihara Travels', tripsList:result,garage:resultt,vehicle:vehicle, fromDate:from, toDate:to});
+    })
     
-//         // create a pdf buffer
-//             const pdfBuffer = await page.pdf({
-//               format: 'A4',
-//               path: fileName,
-//               printBackground:true
-//             })
+  })
+
+})
+
+router.get('/generateEstimate/:id', function(req,res,next){
+  var id = req.params.id;
+  Trip.findById(id)
+  .then((result)=>{
+    console.log(result.vehicleNo);
+    Garage.find(
+      {name:result.vehicleNo}).then(veh=>{
+      console.log(veh);
+      var fileName = './result.pdf';
   
-//             console.log('done');
-//             res.header('content-type','application/pdf');
-//             res.send(pdfBuffer);
+      res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
+        
+        if(err){
+          return console.log(err);
+        }
   
-//         // close the browser
-//             await browser.close();
+      (async () => {
+  
+
+        // Xvfb.startSync((err)=>{if (err) console.error(err)});
+      
+        const PCR = require("puppeteer-chromium-resolver");
+        const puppeteer = require('puppeteer');
+        const option = {
+          revision: "",
+          detectionPath: "",
+          folderName: ".chromium-browser-snapshots",
+          defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+          hosts: [],
+          cacheRevisions: 2,
+          retry: 3,
+          silent: false
+      };
+  
+      const stats = PCR.getStats(option);
+
+  
+      if(stats){
+        const browser = await stats.puppeteer.launch({
+            headless:false,
+            args: ['--no-sandbox','--disable-setuid-sandbox'],
+            executablePath: stats.executablePath
+          }); 
+  
+            // create a new page
+            const page = await browser.newPage();
+  
+            // Configure the navigation timeout
+            await page.setDefaultNavigationTimeout(0);
+  
+           await page.setCacheEnabled(false); 
+           // set your html as the pages content
+            
+            await page.setContent(html, {
+              waitUntil: 'domcontentloaded'
+            })
+            await page.emulateMediaType('screen');
+    
+        // create a pdf buffer
+            const pdfBuffer = await page.pdf({
+              format: 'A4',
+              path: fileName,
+              printBackground:true
+            })
+  
+            console.log('done');
+            res.header('content-type','application/pdf');
+            res.send(pdfBuffer);
+  
+        // close the browser
+            await browser.close();
   
   
   
-//       }
-//       else{
+      }
+      else{
   
-//         const stats = await PCR(option);
-//         const browser = await stats.puppeteer.launch({
-//             headless:false,
-//             args: ['--no-sandbox','--disable-setuid-sandbox'],
-//             executablePath: stats.executablePath
-//           }); 
+        const stats = await PCR(option);
+        const browser = await stats.puppeteer.launch({
+            headless:false,
+            args: ['--no-sandbox','--disable-setuid-sandbox'],
+            executablePath: stats.executablePath
+          }); 
      
-//         // launch a new chrome instance
-//           // create a new page
-//           const page = await browser.newPage();
+        // launch a new chrome instance
+          // create a new page
+          const page = await browser.newPage();
   
-//           // Configure the navigation timeout
-//           await page.setDefaultNavigationTimeout(0);
+          // Configure the navigation timeout
+          await page.setDefaultNavigationTimeout(0);
   
-//          await page.setCacheEnabled(false); 
-//          // set your html as the pages content
+         await page.setCacheEnabled(false); 
+         // set your html as the pages content
           
-//           await page.setContent(html, {
-//             waitUntil: 'domcontentloaded'
-//           })
-//           await page.emulateMediaType('screen');
+          await page.setContent(html, {
+            waitUntil: 'domcontentloaded'
+          })
+          await page.emulateMediaType('screen');
   
-//       // create a pdf buffer
-//           const pdfBuffer = await page.pdf({
-//             format: 'A4',
-//             path: fileName,
-//             printBackground:true
-//           })
+      // create a pdf buffer
+          const pdfBuffer = await page.pdf({
+            format: 'A4',
+            path: fileName,
+            printBackground:true
+          })
   
-//           console.log('done');
-//           res.header('content-type','application/pdf');
-//           res.send(pdfBuffer);
+          console.log('done');
+          res.header('content-type','application/pdf');
+          res.send(pdfBuffer);
   
-//       // close the browser
-//           await browser.close();
-//       }
+      // close the browser
+          await browser.close();
+      }
      
        
            
     
       
     
-//     })().catch((error) =>{
-//       console.error("the message is " + error.message);
-//     });
+    })().catch((error) =>{
+      console.error("the message is " + error.message);
+    });
   
-//   })
+  })
   
 
-//     })
+    }).catch(err=>{
+      console.log(err);
+    })
 
       
    
-// })
-//     })
+}).catch(err=>{
+  console.log("The Error is " + err);
+})
+    })
+
+router.get('/generateBill/:id', function(req,res,next){
+      var id = req.params.id;
+      Trip.findById(id)
+      .then((result)=>{
+        console.log(result.vehicleNo);
+        Garage.find(
+          {name:result.vehicleNo}).then(veh=>{
+          console.log(veh);
+          var fileName = './result.pdf';
+      
+          res.render('billGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
+            
+            if(err){
+              return console.log(err);
+            }
+      
+          (async () => {
+      
+    
+            // Xvfb.startSync((err)=>{if (err) console.error(err)});
+          
+            const PCR = require("puppeteer-chromium-resolver");
+            const puppeteer = require('puppeteer');
+            const option = {
+              revision: "",
+              detectionPath: "",
+              folderName: ".chromium-browser-snapshots",
+              defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+              hosts: [],
+              cacheRevisions: 2,
+              retry: 3,
+              silent: false
+          };
+      
+          const stats = PCR.getStats(option);
+    
+      
+          if(stats){
+            const browser = await stats.puppeteer.launch({
+                headless:false,
+                args: ['--no-sandbox','--disable-setuid-sandbox'],
+                executablePath: stats.executablePath
+              }); 
+      
+                // create a new page
+                const page = await browser.newPage();
+      
+                // Configure the navigation timeout
+                await page.setDefaultNavigationTimeout(0);
+      
+               await page.setCacheEnabled(false); 
+               // set your html as the pages content
+                
+                await page.setContent(html, {
+                  waitUntil: 'domcontentloaded'
+                })
+                await page.emulateMediaType('screen');
+        
+            // create a pdf buffer
+                const pdfBuffer = await page.pdf({
+                  format: 'A4',
+                  path: fileName,
+                  printBackground:true
+                })
+      
+                console.log('done');
+                res.header('content-type','application/pdf');
+                res.send(pdfBuffer);
+      
+            // close the browser
+                await browser.close();
+      
+      
+      
+          }
+          else{
+      
+            const stats = await PCR(option);
+            const browser = await stats.puppeteer.launch({
+                headless:false,
+                args: ['--no-sandbox','--disable-setuid-sandbox'],
+                executablePath: stats.executablePath
+              }); 
+         
+            // launch a new chrome instance
+              // create a new page
+              const page = await browser.newPage();
+      
+              // Configure the navigation timeout
+              await page.setDefaultNavigationTimeout(0);
+      
+             await page.setCacheEnabled(false); 
+             // set your html as the pages content
+              
+              await page.setContent(html, {
+                waitUntil: 'domcontentloaded'
+              })
+              await page.emulateMediaType('screen');
+      
+          // create a pdf buffer
+              const pdfBuffer = await page.pdf({
+                format: 'A4',
+                path: fileName,
+                printBackground:true
+              })
+      
+              console.log('done');
+              res.header('content-type','application/pdf');
+              res.send(pdfBuffer);
+      
+          // close the browser
+              await browser.close();
+          }
+         
+           
+               
+        
+          
+        
+        })().catch((error) =>{
+          console.error("the message is " + error.message);
+        });
+      
+      })
+      
+    
+        }).catch(err=>{
+          console.log(err);
+        })
+    
+          
+       
+    }).catch(err=>{
+      console.log("The Error is " + err);
+    })
+        })
 
 router.get('/login', function(req,res,next){
   if(req.session.admin === true){

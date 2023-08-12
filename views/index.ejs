@@ -23,6 +23,9 @@
           
         </form>
       </div>
+      <div class="col-md-12" style="text-align: center;">
+        <a href="/checkAvailability" role="button" class="btn btn-sm btn-success">Check Vehicle Availability</a>
+      </div>
     </div>
   </div>
 </section>
@@ -39,13 +42,15 @@
                 <table class="table">
                     <thead>
                       <tr>
-                        <th scope="col">Trip Date</th>
+                        <th scope="col">Trip ID</th>
+                        <th scope="col">Trip Start Date</th>
+                        <th scope="col">Trip End Date</th>
                         <th scope="col">From</th>
                         <th scope="col">To</th>
                         <th scope="col">Details</th>
-                        <th scope="col">Cancel?</th>
                         <th scope="col">Confirm?</th>
                         <th scope="col">Delete</th>
+                        <th scope="col">Estimate</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -53,9 +58,12 @@
                             <% trips.forEach(trip => { %>
                                 <% if(trip.tripConfirmed == "enquiry") { %>
                       <tr>
-                        <td><%=trip.date.toLocaleString().slice(0,9)%></td>
+                        <td><%=trip.tripID%></td>
+                        <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
+                        <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
                         <td><%=trip.from%></td>
                         <td><%=trip.to%></td>
+
                         <!-- Details -->
                         <td>
                             <!-- Button trigger modal -->
@@ -102,8 +110,7 @@
     </div>
   </div>
                         </td>
-                        
-                        <td><a href="/tripCancel/<%=trip._id%>" type="button" class="btn btn-sm btn-danger">Yes</a></td>
+
                         <!-- Trip Confirmation -->
                         <td>
                             <!-- Button trigger modal -->
@@ -137,7 +144,10 @@
                                 </div>
                               </div>
                         </td>
+
                         <td><a href="/tripDeletion/<%=trip._id%>" type="button" class="btn btn-sm btn-danger">X</a></td>
+
+                        <td><a href="/generateEstimate/<%=trip._id%>" type="button" class="btn btn-sm btn-primary"><i class="bi bi-printer-fill"></i></a></td>
                       </tr>
                       <% } %>   
                    <% }) %>
@@ -164,7 +174,8 @@
               <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Trip Date</th>
+                      <th scope="col">Start Date</th>
+                      <th scope="col">End Date</th>
                       <th scope="col">From</th>
                       <th scope="col">To</th>
                       <th scope="col">Details</th>
@@ -180,7 +191,8 @@
                           <% trips.forEach(trip => { %>
                               <% if(trip.tripConfirmed == "confirmed" && trip.closeTrip !== "Yes") { %>
                     <tr>
-                      <td><%=trip.date.toLocaleString().slice(0,9)%></td>
+                      <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
+                      <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
                       <td><%=trip.from%></td>
                       <td><%=trip.to%></td>
                       <!-- Trip Details -->
@@ -241,7 +253,13 @@
                       <!-- Driver Assignment -->
                       <td>
 
-                        <!-- Button trigger modal -->
+                        <% if (trip.driverAssigned) { %>
+                        
+                          <%=trip.driverName%> <br> <%=trip.driverNum%>
+
+                        <% } else { %>
+
+                           <!-- Button trigger modal -->
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal2-<%=trip._id%>">
                           Assign?
                         </button>
@@ -289,11 +307,21 @@
                               </div>
                             </div>
                           </div>
+                          
+                        <% } %>
+
+                       
 
                       </td>
 
                       <!-- Vehicle Assignment -->
                       <td>
+
+                        <% if (trip.vehicleAssigned) { %>
+                        
+                          <%=trip.vehicleNo%>
+
+                        <% } else { %>
 
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#vehicleModal-<%=trip._id%>">
@@ -316,21 +344,11 @@
                                           <option selected>Choose a Vehicle</option>
                                           <% if (garages) { %>
                                             <% garages.forEach(garage => { %>
-                                           <option value="<%=garage._id%>"> <%=garage.name%></option>
+                                           <option value="<%=garage.name%>"> <%=garage.name%></option>
                                             <% }) %>
                                           <% } %>  
                                         </select>
                                         <label for="vehicleSelection">Vehicle yet to assign</label>
-                                      <% } else { %>
-                                        <select class="form-select" name="vehicleSelection" id="vehicleSelection" aria-label="Floating label select example">
-                                          <option selected>Change Vehicle?</option>
-                                          <% if (garages) { %>
-                                            <% garages.forEach(garage => { %>
-                                           <option value="<%=garage._id%>"><%=garage.name%></option>
-                                            <% }) %>
-                                          <% } %>  
-                                        </select>
-                                        <label for="vehicleSelection">Vehicle Already assigned : <%=trip.vehicleNo%></label>   
                                       <% } %>
                                       
                                     </div>
@@ -347,6 +365,7 @@
                             </div>
                           </div>
 
+                          <% } %>  
                       </td>
 
                       <!-- Alert Customer -->
@@ -420,7 +439,8 @@
                 <table class="table">
                     <thead>
                       <tr>
-                        <th scope="col">Trip Date</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
                         <th scope="col">From</th>
                         <th scope="col">To</th>
                         <th scope="col">Vehicle</th>
@@ -431,7 +451,7 @@
                         <th scope="col">Paid</th>
                         <th scope="col">Balance</th>
                         <th scope="col">Paid ?</th>
-                        <!-- <th scope="col">Bill</th> -->
+                        <th scope="col">Bill</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -439,7 +459,8 @@
                             <% trips.forEach(trip => { %>
                                 <% if(trip.paymentDone == "No" && trip.closeTrip == "Yes") { %>
                       <tr>
-                        <td><%=trip.date.toLocaleString().slice(0,8)%></td>
+                        <td><%=trip.dateFrom.toLocaleString().slice(0,8)%></td>
+                        <td><%=trip.dateTo.toLocaleString().slice(0,8)%></td>
                         <td><%=trip.from%></td>
                         <td><%=trip.to%></td>
                         <td><%=trip.vehicleType%></td>
@@ -538,7 +559,7 @@
                           </div>
 
                         </td>
-                        <!-- <td><a href="/generateBill/<%=trip._id%>" type="button" class="btn btn-sm btn-primary"><i class="bi bi-printer-fill"></i></a></td> -->
+                        <td><a href="/generateBill/<%=trip._id%>" type="button" class="btn btn-sm btn-primary"><i class="bi bi-printer-fill"></i></a></td>
                       </tr>
                       <% } %>   
                    <% }) %>
