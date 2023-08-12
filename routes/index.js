@@ -710,279 +710,279 @@ router.post('/getUpcomingTrips', function(req,res,next){
 
 })
 
-router.get('/generateEstimate/:id', function(req,res,next){
-  var id = req.params.id;
-  Trip.findById(id)
-  .then((result)=>{
-    console.log(result.vehicleNo);
-    Garage.find(
-      {name:result.vehicleNo}).then(veh=>{
-      console.log(veh);
-      var fileName = './result.pdf';
+// router.get('/generateEstimate/:id', function(req,res,next){
+//   var id = req.params.id;
+//   Trip.findById(id)
+//   .then((result)=>{
+//     console.log(result.vehicleNo);
+//     Garage.find(
+//       {name:result.vehicleNo}).then(veh=>{
+//       console.log(veh);
+//       var fileName = './result.pdf';
   
-      res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
+//       res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
         
-        if(err){
-          return console.log(err);
-        }
+//         if(err){
+//           return console.log(err);
+//         }
   
-      (async () => {
+//       (async () => {
   
 
-        // Xvfb.startSync((err)=>{if (err) console.error(err)});
+//         // Xvfb.startSync((err)=>{if (err) console.error(err)});
       
-        const PCR = require("puppeteer-chromium-resolver");
-        const puppeteer = require('puppeteer');
-        const option = {
-          revision: "",
-          detectionPath: "",
-          folderName: ".chromium-browser-snapshots",
-          defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
-          hosts: [],
-          cacheRevisions: 2,
-          retry: 3,
-          silent: false
-      };
+//         const PCR = require("puppeteer-chromium-resolver");
+//         const puppeteer = require('puppeteer');
+//         const option = {
+//           revision: "",
+//           detectionPath: "",
+//           folderName: ".chromium-browser-snapshots",
+//           defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+//           hosts: [],
+//           cacheRevisions: 2,
+//           retry: 3,
+//           silent: false
+//       };
   
-      const stats = PCR.getStats(option);
+//       const stats = PCR.getStats(option);
 
   
-      if(stats){
-        const browser = await stats.puppeteer.launch({
-            headless:false,
-            args: ['--no-sandbox','--disable-setuid-sandbox'],
-            executablePath: stats.executablePath
-          }); 
+//       if(stats){
+//         const browser = await stats.puppeteer.launch({
+//             headless:false,
+//             args: ['--no-sandbox','--disable-setuid-sandbox'],
+//             executablePath: stats.executablePath
+//           }); 
   
-            // create a new page
-            const page = await browser.newPage();
+//             // create a new page
+//             const page = await browser.newPage();
   
-            // Configure the navigation timeout
-            await page.setDefaultNavigationTimeout(0);
+//             // Configure the navigation timeout
+//             await page.setDefaultNavigationTimeout(0);
   
-           await page.setCacheEnabled(false); 
-           // set your html as the pages content
+//            await page.setCacheEnabled(false); 
+//            // set your html as the pages content
             
-            await page.setContent(html, {
-              waitUntil: 'domcontentloaded'
-            })
-            await page.emulateMediaType('screen');
+//             await page.setContent(html, {
+//               waitUntil: 'domcontentloaded'
+//             })
+//             await page.emulateMediaType('screen');
     
-        // create a pdf buffer
-            const pdfBuffer = await page.pdf({
-              format: 'A4',
-              path: fileName,
-              printBackground:true
-            })
+//         // create a pdf buffer
+//             const pdfBuffer = await page.pdf({
+//               format: 'A4',
+//               path: fileName,
+//               printBackground:true
+//             })
   
-            console.log('done');
-            res.header('content-type','application/pdf');
-            res.send(pdfBuffer);
+//             console.log('done');
+//             res.header('content-type','application/pdf');
+//             res.send(pdfBuffer);
   
-        // close the browser
-            await browser.close();
+//         // close the browser
+//             await browser.close();
   
   
   
-      }
-      else{
+//       }
+//       else{
   
-        const stats = await PCR(option);
-        const browser = await stats.puppeteer.launch({
-            headless:false,
-            args: ['--no-sandbox','--disable-setuid-sandbox'],
-            executablePath: stats.executablePath
-          }); 
+//         const stats = await PCR(option);
+//         const browser = await stats.puppeteer.launch({
+//             headless:false,
+//             args: ['--no-sandbox','--disable-setuid-sandbox'],
+//             executablePath: stats.executablePath
+//           }); 
      
-        // launch a new chrome instance
-          // create a new page
-          const page = await browser.newPage();
+//         // launch a new chrome instance
+//           // create a new page
+//           const page = await browser.newPage();
   
-          // Configure the navigation timeout
-          await page.setDefaultNavigationTimeout(0);
+//           // Configure the navigation timeout
+//           await page.setDefaultNavigationTimeout(0);
   
-         await page.setCacheEnabled(false); 
-         // set your html as the pages content
+//          await page.setCacheEnabled(false); 
+//          // set your html as the pages content
           
-          await page.setContent(html, {
-            waitUntil: 'domcontentloaded'
-          })
-          await page.emulateMediaType('screen');
+//           await page.setContent(html, {
+//             waitUntil: 'domcontentloaded'
+//           })
+//           await page.emulateMediaType('screen');
   
-      // create a pdf buffer
-          const pdfBuffer = await page.pdf({
-            format: 'A4',
-            path: fileName,
-            printBackground:true
-          })
+//       // create a pdf buffer
+//           const pdfBuffer = await page.pdf({
+//             format: 'A4',
+//             path: fileName,
+//             printBackground:true
+//           })
   
-          console.log('done');
-          res.header('content-type','application/pdf');
-          res.send(pdfBuffer);
+//           console.log('done');
+//           res.header('content-type','application/pdf');
+//           res.send(pdfBuffer);
   
-      // close the browser
-          await browser.close();
-      }
+//       // close the browser
+//           await browser.close();
+//       }
      
        
            
     
       
     
-    })().catch((error) =>{
-      console.error("the message is " + error.message);
-    });
+//     })().catch((error) =>{
+//       console.error("the message is " + error.message);
+//     });
   
-  })
+//   })
   
 
-    }).catch(err=>{
-      console.log(err);
-    })
+//     }).catch(err=>{
+//       console.log(err);
+//     })
 
       
    
-}).catch(err=>{
-  console.log("The Error is " + err);
-})
-    })
+// }).catch(err=>{
+//   console.log("The Error is " + err);
+// })
+//     })
 
-router.get('/generateBill/:id', function(req,res,next){
-      var id = req.params.id;
-      Trip.findById(id)
-      .then((result)=>{
-        console.log(result.vehicleNo);
-        Garage.find(
-          {name:result.vehicleNo}).then(veh=>{
-          console.log(veh);
-          var fileName = './result.pdf';
+// router.get('/generateBill/:id', function(req,res,next){
+//       var id = req.params.id;
+//       Trip.findById(id)
+//       .then((result)=>{
+//         console.log(result.vehicleNo);
+//         Garage.find(
+//           {name:result.vehicleNo}).then(veh=>{
+//           console.log(veh);
+//           var fileName = './result.pdf';
       
-          res.render('billGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
+//           res.render('billGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
             
-            if(err){
-              return console.log(err);
-            }
+//             if(err){
+//               return console.log(err);
+//             }
       
-          (async () => {
+//           (async () => {
       
     
-            // Xvfb.startSync((err)=>{if (err) console.error(err)});
+//             // Xvfb.startSync((err)=>{if (err) console.error(err)});
           
-            const PCR = require("puppeteer-chromium-resolver");
-            const puppeteer = require('puppeteer-core');
-            const option = {
-              revision: "",
-              detectionPath: "",
-              folderName: ".chromium-browser-snapshots",
-              defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
-              hosts: [],
-              cacheRevisions: 2,
-              retry: 3,
-              silent: false
-          };
+//             const PCR = require("puppeteer-chromium-resolver");
+//             const puppeteer = require('puppeteer');
+//             const option = {
+//               revision: "",
+//               detectionPath: "",
+//               folderName: ".chromium-browser-snapshots",
+//               defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+//               hosts: [],
+//               cacheRevisions: 2,
+//               retry: 3,
+//               silent: false
+//           };
       
-          const stats = PCR.getStats(option);
+//           const stats = PCR.getStats(option);
     
       
-          if(stats){
-            const browser = await stats.puppeteer.launch({
-                headless:false,
-                args: ['--no-sandbox','--disable-setuid-sandbox'],
-                executablePath: stats.executablePath
-              }); 
+//           if(stats){
+//             const browser = await stats.puppeteer.launch({
+//                 headless:false,
+//                 args: ['--no-sandbox','--disable-setuid-sandbox'],
+//                 executablePath: stats.executablePath
+//               }); 
       
-                // create a new page
-                const page = await browser.newPage();
+//                 // create a new page
+//                 const page = await browser.newPage();
       
-                // Configure the navigation timeout
-                await page.setDefaultNavigationTimeout(0);
+//                 // Configure the navigation timeout
+//                 await page.setDefaultNavigationTimeout(0);
       
-               await page.setCacheEnabled(false); 
-               // set your html as the pages content
+//                await page.setCacheEnabled(false); 
+//                // set your html as the pages content
                 
-                await page.setContent(html, {
-                  waitUntil: 'domcontentloaded'
-                })
-                await page.emulateMediaType('screen');
+//                 await page.setContent(html, {
+//                   waitUntil: 'domcontentloaded'
+//                 })
+//                 await page.emulateMediaType('screen');
         
-            // create a pdf buffer
-                const pdfBuffer = await page.pdf({
-                  format: 'A4',
-                  path: fileName,
-                  printBackground:true
-                })
+//             // create a pdf buffer
+//                 const pdfBuffer = await page.pdf({
+//                   format: 'A4',
+//                   path: fileName,
+//                   printBackground:true
+//                 })
       
-                console.log('done');
-                res.header('content-type','application/pdf');
-                res.send(pdfBuffer);
+//                 console.log('done');
+//                 res.header('content-type','application/pdf');
+//                 res.send(pdfBuffer);
       
-            // close the browser
-                await browser.close();
+//             // close the browser
+//                 await browser.close();
       
       
       
-          }
-          else{
+//           }
+//           else{
       
-            const stats = await PCR(option);
-            const browser = await stats.puppeteer.launch({
-                headless:false,
-                args: ['--no-sandbox','--disable-setuid-sandbox'],
-                executablePath: stats.executablePath
-              }); 
+//             const stats = await PCR(option);
+//             const browser = await stats.puppeteer.launch({
+//                 headless:false,
+//                 args: ['--no-sandbox','--disable-setuid-sandbox'],
+//                 executablePath: stats.executablePath
+//               }); 
          
-            // launch a new chrome instance
-              // create a new page
-              const page = await browser.newPage();
+//             // launch a new chrome instance
+//               // create a new page
+//               const page = await browser.newPage();
       
-              // Configure the navigation timeout
-              await page.setDefaultNavigationTimeout(0);
+//               // Configure the navigation timeout
+//               await page.setDefaultNavigationTimeout(0);
       
-             await page.setCacheEnabled(false); 
-             // set your html as the pages content
+//              await page.setCacheEnabled(false); 
+//              // set your html as the pages content
               
-              await page.setContent(html, {
-                waitUntil: 'domcontentloaded'
-              })
-              await page.emulateMediaType('screen');
+//               await page.setContent(html, {
+//                 waitUntil: 'domcontentloaded'
+//               })
+//               await page.emulateMediaType('screen');
       
-          // create a pdf buffer
-              const pdfBuffer = await page.pdf({
-                format: 'A4',
-                path: fileName,
-                printBackground:true
-              })
+//           // create a pdf buffer
+//               const pdfBuffer = await page.pdf({
+//                 format: 'A4',
+//                 path: fileName,
+//                 printBackground:true
+//               })
       
-              console.log('done');
-              res.header('content-type','application/pdf');
-              res.send(pdfBuffer);
+//               console.log('done');
+//               res.header('content-type','application/pdf');
+//               res.send(pdfBuffer);
       
-          // close the browser
-              await browser.close();
-          }
+//           // close the browser
+//               await browser.close();
+//           }
          
            
                
         
           
         
-        })().catch((error) =>{
-          console.error("the message is " + error.message);
-        });
+//         })().catch((error) =>{
+//           console.error("the message is " + error.message);
+//         });
       
-      })
+//       })
       
     
-        }).catch(err=>{
-          console.log(err);
-        })
+//         }).catch(err=>{
+//           console.log(err);
+//         })
     
           
        
-    }).catch(err=>{
-      console.log("The Error is " + err);
-    })
-        })
+//     }).catch(err=>{
+//       console.log("The Error is " + err);
+//     })
+//         })
 
 router.get('/login', function(req,res,next){
   if(req.session.admin === true){
