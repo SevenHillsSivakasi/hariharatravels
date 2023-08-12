@@ -869,7 +869,7 @@ router.get('/generateBill/:id', function(req,res,next){
             // Xvfb.startSync((err)=>{if (err) console.error(err)});
           
             const PCR = require("puppeteer-chromium-resolver");
-            const puppeteer = require('puppeteer');
+            const puppeteer = require('puppeteer-core');
             const option = {
               revision: "",
               detectionPath: "",
