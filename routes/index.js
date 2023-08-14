@@ -36,6 +36,9 @@ var upload = multer({
   fileFilter: fileFilterr
 });
 
+//Required package
+var pdf = require("pdf-creator-node");
+var fs = require("fs");
 
 const accountSid = process.env.AUTH_SID;
 const authToken = process.env.AUTH_TOKEN;
@@ -983,6 +986,59 @@ router.post('/getUpcomingTrips', function(req,res,next){
 //       console.log("The Error is " + err);
 //     })
 //         })
+
+
+
+router.get('/generateEstimate/:id', function(req,res,next){
+
+   var id = req.params.id;
+  Trip.findById(id)
+  .then((result)=>{
+    console.log(result.vehicleNo);
+    Garage.find(
+      {name:result.vehicleNo}).then(veh=>{
+      console.log(veh);
+      var fileName = './result.pdf';
+      res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
+
+        var document = {
+          html: html,
+          data:{
+            
+          },
+          path: "./output.pdf",
+          type: "",
+          };
+
+          var options = {
+            format: "A4",
+            orientation: "portrait",
+            }
+        
+            // var fileName = './estimates/estimate-' + result.tripID + '.pdf';
+
+            pdf.create(document,options)
+            .then((ress)=>{
+              console.log(ress);
+              
+
+              var data =fs.readFileSync('./output.pdf');
+              res.contentType("application/pdf");
+              res.send(data);
+  
+              
+            })
+              .catch(err=>{
+                return console.log(err);
+              })
+
+      
+    })
+})
+
+})
+
+})
 
 router.get('/login', function(req,res,next){
   if(req.session.admin === true){
