@@ -1079,45 +1079,83 @@ router.get('/generateEstimate/:id', function(req,res,next){
       silent: false
   };      
 
-        
+  const stats = PCR.getStats(option);
+
+    if(stats){
       
-    // const stats = PCR.getStats(option);
-    const stats = await PCR(option);
-    const browser = await stats.puppeteer.launch({
-                  headless:false,
-                  args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
-                  executablePath: stats.executablePath
-                });
-     
+          const browser = await stats.puppeteer.launch({
+            headless:false,
+            args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
+            executablePath: stats.executablePath
+          });
+
     // create a new page
     const page = await browser.newPage();
-                
-     // Configure the navigation timeout
-     await page.setDefaultNavigationTimeout(0);
+          
+    // Configure the navigation timeout
+    await page.setDefaultNavigationTimeout(0);
 
-     await page.setCacheEnabled(false); 
-     // set your html as the pages content
-      
+    await page.setCacheEnabled(false); 
+    // set your html as the pages content
+
 
 
     const html = htmll;
     await page.setContent(html, {
-      waitUntil: 'domcontentloaded'
+    waitUntil: 'domcontentloaded'
     });
     await page.emulateMediaType('screen');
     const pdf = await page.pdf({format: "A4"});
     res.contentType("application/pdf");
 
-    // await page.setCacheEnabled(false);
-    // await pageSession.send('Network.setCacheDisabled', { cacheDisabled: true });
 
     // optionally:
     res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=invoice.pdf"
+    "Content-Disposition",
+    "attachment; filename=invoice.pdf"
     );
 
     res.send(pdf);
+    }
+    else{
+      const stats = await PCR(option);
+      const browser = await stats.puppeteer.launch({
+        headless:false,
+        args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
+        executablePath: stats.executablePath
+      });
+
+// create a new page
+const page = await browser.newPage();
+      
+// Configure the navigation timeout
+await page.setDefaultNavigationTimeout(0);
+
+await page.setCacheEnabled(false); 
+// set your html as the pages content
+
+
+
+const html = htmll;
+await page.setContent(html, {
+waitUntil: 'domcontentloaded'
+});
+await page.emulateMediaType('screen');
+const pdf = await page.pdf({format: "A4"});
+res.contentType("application/pdf");
+
+
+// optionally:
+res.setHeader(
+"Content-Disposition",
+"attachment; filename=invoice.pdf"
+);
+
+res.send(pdf);
+
+    }
+
+  
   })()
     .catch(err => {
       console.error(err);
@@ -1132,6 +1170,132 @@ router.get('/generateEstimate/:id', function(req,res,next){
 })
 
 })
+
+router.get('/generateBill/:id', function(req,res,next){
+
+  var id = req.params.id;
+ Trip.findById(id)
+ .then((result)=>{
+   console.log(result.vehicleNo);
+   Garage.find(
+     {name:result.vehicleNo}).then(veh=>{
+     console.log(veh);
+     
+     res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
+
+      let browser;
+  (async () => {
+
+    var xvfb = new Xvfb({
+      silent: true,
+      xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
+  });
+     xvfb.start((err)=>{if (err) console.error(err)});
+
+    const PCR = require("puppeteer-chromium-resolver");
+    const puppeteer = require('puppeteer');
+    const option = {
+      revision: "",
+      detectionPath: "",
+      folderName: ".chromium-browser-snapshots",
+      defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+      hosts: [],
+      cacheRevisions: 2,
+      retry: 3,
+      silent: false
+  };      
+  const stats = PCR.getStats(option);
+
+    if(stats){
+       
+          const browser = await stats.puppeteer.launch({
+            headless:false,
+            args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
+            executablePath: stats.executablePath
+          });
+
+    // create a new page
+    const page = await browser.newPage();
+          
+    // Configure the navigation timeout
+    await page.setDefaultNavigationTimeout(0);
+
+    await page.setCacheEnabled(false); 
+    // set your html as the pages content
+
+
+
+    const html = htmll;
+    await page.setContent(html, {
+    waitUntil: 'domcontentloaded'
+    });
+    await page.emulateMediaType('screen');
+    const pdf = await page.pdf({format: "A4"});
+    res.contentType("application/pdf");
+
+
+    // optionally:
+    res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=invoice.pdf"
+    );
+
+    res.send(pdf);
+    }
+    else{
+      const stats = await PCR(option);
+      const browser = await stats.puppeteer.launch({
+        headless:false,
+        args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
+        executablePath: stats.executablePath
+      });
+
+// create a new page
+const page = await browser.newPage();
+      
+// Configure the navigation timeout
+await page.setDefaultNavigationTimeout(0);
+
+await page.setCacheEnabled(false); 
+// set your html as the pages content
+
+
+
+const html = htmll;
+await page.setContent(html, {
+waitUntil: 'domcontentloaded'
+});
+await page.emulateMediaType('screen');
+const pdf = await page.pdf({format: "A4"});
+res.contentType("application/pdf");
+
+
+// optionally:
+res.setHeader(
+"Content-Disposition",
+"attachment; filename=invoice.pdf"
+);
+
+res.send(pdf);
+
+    }
+
+  
+  })()
+    .catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    }) 
+    .finally(() => browser?.close());
+})
+     
+  
+})
+
+})
+
+})
+
 
 router.get('/login', function(req,res,next){
   if(req.session.admin === true){
