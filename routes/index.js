@@ -13,7 +13,7 @@ const puppeteer = require("puppeteer");
 var pdf = require("pdf-creator-node");
 var fs = require("fs");
 
-// var Xvfb = require('xvfb');
+var Xvfb = require('xvfb');
 
 const multer  = require('multer')
 
@@ -1060,6 +1060,8 @@ router.get('/generateEstimate/:id', function(req,res,next){
       let browser;
   (async () => {
 
+     Xvfb.startSync((err)=>{if (err) console.error(err)});
+
     const PCR = require("puppeteer-chromium-resolver");
     const puppeteer = require('puppeteer');
     const option = {
@@ -1071,7 +1073,9 @@ router.get('/generateEstimate/:id', function(req,res,next){
       cacheRevisions: 2,
       retry: 3,
       silent: false
-  };            
+  };      
+
+        
       
     // const stats = PCR.getStats(option);
     const stats = await PCR(option);
