@@ -7,7 +7,7 @@ var path = require('path');
 const { ToWords } = require('to-words');
 const toWords = new ToWords();
 
-
+const puppeteer = require("puppeteer");
 //Required package
 var pdf = require("pdf-creator-node");
 var fs = require("fs");
@@ -992,50 +992,95 @@ router.post('/getUpcomingTrips', function(req,res,next){
 //         })
 
 
+// Second Attempt
+// router.get('/generateEstimate/:id', function(req,res,next){
+
+//    var id = req.params.id;
+//   Trip.findById(id)
+//   .then((result)=>{
+//     console.log(result.vehicleNo);
+//     Garage.find(
+//       {name:result.vehicleNo}).then(veh=>{
+//       console.log(veh);
+      
+//       res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
+
+//         var document = {
+//           html: html,
+//           data:{
+            
+//           },
+//           path: "./output.pdf",
+//           type: "",
+//           };
+
+//           var options = {
+//             format: "A4",
+//             orientation: "portrait",
+//             }
+
+//             pdf.create(document,options)
+//             .then((ress)=>{
+//               console.log(ress);
+//               res.redirect('/');
+
+//               // var data =fs.readFileSync('./output.pdf');
+//               // res.contentType("application/pdf");
+//               // res.send(data);
+  
+              
+//             })
+//               .catch(err=>{
+//                 return console.log(err);
+//               })
+
+      
+//     })
+// })
+
+// })
+
+// })
+
+
 
 router.get('/generateEstimate/:id', function(req,res,next){
 
-   var id = req.params.id;
-  Trip.findById(id)
-  .then((result)=>{
-    console.log(result.vehicleNo);
-    Garage.find(
-      {name:result.vehicleNo}).then(veh=>{
-      console.log(veh);
-      
-      res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
+  var id = req.params.id;
+ Trip.findById(id)
+ .then((result)=>{
+   console.log(result.vehicleNo);
+   Garage.find(
+     {name:result.vehicleNo}).then(veh=>{
+     console.log(veh);
+     
+     res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
 
-        var document = {
-          html: html,
-          data:{
-            
-          },
-          path: "./output.pdf",
-          type: "",
-          };
+      let browser;
+  (async () => {
+    browser = await puppeteer.launch();
+    const [page] = await browser.pages();
+    const html = htmll;
+    await page.setContent(html);
+    const pdf = await page.pdf({format: "A4"});
+    res.contentType("application/pdf");
 
-          var options = {
-            format: "A4",
-            orientation: "portrait",
-            }
+    // optionally:
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=invoice.pdf"
+    );
 
-            pdf.create(document,options)
-            .then((ress)=>{
-              console.log(ress);
-              res.redirect('/');
-
-              // var data =fs.readFileSync('./output.pdf');
-              // res.contentType("application/pdf");
-              // res.send(data);
+    res.send(pdf);
+  })()
+    .catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    }) 
+    .finally(() => browser?.close());
+})
+     
   
-              
-            })
-              .catch(err=>{
-                return console.log(err);
-              })
-
-      
-    })
 })
 
 })
