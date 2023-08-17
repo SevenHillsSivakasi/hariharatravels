@@ -1098,14 +1098,13 @@ router.get('/generateEstimate/:id', function(req,res,next){
      await page.setCacheEnabled(false); 
      // set your html as the pages content
       
-      await page.setContent(html, {
-        waitUntil: 'domcontentloaded'
-      })
-      await page.emulateMediaType('screen');
 
 
     const html = htmll;
-    await page.setContent(html);
+    await page.setContent(html, {
+      waitUntil: 'domcontentloaded'
+    });
+    await page.emulateMediaType('screen');
     const pdf = await page.pdf({format: "A4"});
     res.contentType("application/pdf");
 
