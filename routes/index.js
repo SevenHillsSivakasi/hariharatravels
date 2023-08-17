@@ -1017,7 +1017,13 @@ router.get('/generateEstimate/:id', function(req,res,next){
         
             // var fileName = './estimates/estimate-' + result.tripID + '.pdf';
 
-            pdf.create(document,options)
+            pdf.create(document,options, {
+              childProcessOptions: {
+                env: {
+                  OPENSSL_CONF: '/dev/null',
+                },
+              }
+            })
             .then((ress)=>{
               console.log(ress);
               
