@@ -1065,6 +1065,9 @@ router.get('/generateEstimate/:id', function(req,res,next){
     const pdf = await page.pdf({format: "A4"});
     res.contentType("application/pdf");
 
+    await page.setCacheEnabled(false);
+    await pageSession.send('Network.setCacheDisabled', { cacheDisabled: true });
+
     // optionally:
     res.setHeader(
       "Content-Disposition",
