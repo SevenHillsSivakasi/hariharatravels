@@ -6,6 +6,12 @@ var fs = require('fs');
 var path = require('path');
 const { ToWords } = require('to-words');
 const toWords = new ToWords();
+
+
+//Required package
+var pdf = require("pdf-creator-node");
+var fs = require("fs");
+
 // var Xvfb = require('xvfb');
 
 const multer  = require('multer')
@@ -36,9 +42,7 @@ var upload = multer({
   fileFilter: fileFilterr
 });
 
-//Required package
-var pdf = require("pdf-creator-node");
-var fs = require("fs");
+
 
 const accountSid = process.env.AUTH_SID;
 const authToken = process.env.AUTH_TOKEN;
@@ -998,7 +1002,7 @@ router.get('/generateEstimate/:id', function(req,res,next){
     Garage.find(
       {name:result.vehicleNo}).then(veh=>{
       console.log(veh);
-      var fileName = './result.pdf';
+      
       res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,html){
 
         var document = {
@@ -1014,23 +1018,15 @@ router.get('/generateEstimate/:id', function(req,res,next){
             format: "A4",
             orientation: "portrait",
             }
-        
-            // var fileName = './estimates/estimate-' + result.tripID + '.pdf';
 
-            pdf.create(document,options, {
-              childProcessOptions: {
-                env: {
-                  OPENSSL_CONF: '/dev/null',
-                },
-              }
-            })
+            pdf.create(document,options)
             .then((ress)=>{
               console.log(ress);
-              
+              res.redirect('/');
 
-              var data =fs.readFileSync('./output.pdf');
-              res.contentType("application/pdf");
-              res.send(data);
+              // var data =fs.readFileSync('./output.pdf');
+              // res.contentType("application/pdf");
+              // res.send(data);
   
               
             })
