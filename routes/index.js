@@ -1055,7 +1055,7 @@ router.get('/generateEstimate/:id', function(req,res,next){
      {name:result.vehicleNo}).then(veh=>{
      console.log(veh);
      
-     res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
+     res.render('billGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
 
       let browser;
   (async () => {
