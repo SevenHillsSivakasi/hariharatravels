@@ -1088,14 +1088,25 @@ router.get('/generateEstimate/:id', function(req,res,next){
                   args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
                   executablePath: stats.executablePath
                 }); 
-    const [page] = await browser.pages();
+     // Configure the navigation timeout
+     await page.setDefaultNavigationTimeout(0);
+
+     await page.setCacheEnabled(false); 
+     // set your html as the pages content
+      
+      await page.setContent(html, {
+        waitUntil: 'domcontentloaded'
+      })
+      await page.emulateMediaType('screen');
+
+
     const html = htmll;
     await page.setContent(html);
     const pdf = await page.pdf({format: "A4"});
     res.contentType("application/pdf");
 
-    await page.setCacheEnabled(false);
-    await pageSession.send('Network.setCacheDisabled', { cacheDisabled: true });
+    // await page.setCacheEnabled(false);
+    // await pageSession.send('Network.setCacheDisabled', { cacheDisabled: true });
 
     // optionally:
     res.setHeader(
