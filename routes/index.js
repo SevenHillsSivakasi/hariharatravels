@@ -1060,7 +1060,11 @@ router.get('/generateEstimate/:id', function(req,res,next){
       let browser;
   (async () => {
 
-     Xvfb.startSync((err)=>{if (err) console.error(err)});
+    var xvfb = new Xvfb({
+      silent: true,
+      xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
+  });
+     xvfb.start((err)=>{if (err) console.error(err)});
 
     const PCR = require("puppeteer-chromium-resolver");
     const puppeteer = require('puppeteer');
@@ -1081,7 +1085,7 @@ router.get('/generateEstimate/:id', function(req,res,next){
     const stats = await PCR(option);
     const browser = await stats.puppeteer.launch({
                   headless:false,
-                  args: ['--no-sandbox','--disable-setuid-sandbox'],
+                  args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
                   executablePath: stats.executablePath
                 }); 
     const [page] = await browser.pages();
