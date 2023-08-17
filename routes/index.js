@@ -8,7 +8,7 @@ const { ToWords } = require('to-words');
 const toWords = new ToWords();
 
 const puppeteer = require("puppeteer");
-const chromium = require("chrome-aws-lambda");
+
 //Required package
 var pdf = require("pdf-creator-node");
 var fs = require("fs");
