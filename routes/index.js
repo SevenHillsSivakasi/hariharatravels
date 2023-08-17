@@ -8,6 +8,7 @@ const { ToWords } = require('to-words');
 const toWords = new ToWords();
 
 const puppeteer = require("puppeteer");
+const chromium = require("chrome-aws-lambda");
 //Required package
 var pdf = require("pdf-creator-node");
 var fs = require("fs");
@@ -1058,7 +1059,27 @@ router.get('/generateEstimate/:id', function(req,res,next){
 
       let browser;
   (async () => {
-    browser = await puppeteer.launch();
+
+    const PCR = require("puppeteer-chromium-resolver");
+    const puppeteer = require('puppeteer');
+    const option = {
+      revision: "",
+      detectionPath: "",
+      folderName: ".chromium-browser-snapshots",
+      defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+      hosts: [],
+      cacheRevisions: 2,
+      retry: 3,
+      silent: false
+  };            
+      
+    // const stats = PCR.getStats(option);
+    const stats = await PCR(option);
+    const browser = await stats.puppeteer.launch({
+                  headless:false,
+                  args: ['--no-sandbox','--disable-setuid-sandbox'],
+                  executablePath: stats.executablePath
+                }); 
     const [page] = await browser.pages();
     const html = htmll;
     await page.setContent(html);
