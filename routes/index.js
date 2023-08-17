@@ -1087,7 +1087,11 @@ router.get('/generateEstimate/:id', function(req,res,next){
                   headless:false,
                   args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
                   executablePath: stats.executablePath
-                }); 
+                });
+     
+    // create a new page
+    const page = await browser.newPage();
+                
      // Configure the navigation timeout
      await page.setDefaultNavigationTimeout(0);
 
