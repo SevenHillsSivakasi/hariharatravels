@@ -216,9 +216,9 @@
 
         onlyTripExpense = expecKms * ratePerKm;
         rentalValue =  dayRent * tripDays;
-        totalDriverBata = tripDays * driverBata;
-        var totalExpense = onlyTripExpense + rentalValue + tollAmt + totalDriverBata + hillCharge + permitCharge;
+        var totalExpense = onlyTripExpense + rentalValue + tollAmt + driverBata + hillCharge + permitCharge;
 
+        // document.getElementById("driverBata").value = totalDriverBata;
         document.getElementById("totalTariff").value = totalExpense;
         document.getElementById("tripTariff").value = onlyTripExpense;
     } 
@@ -233,7 +233,10 @@
         
         var daysCount = diffDays / (86400*1000);
         
+        var totalDriverBata = daysCount * 300;
+
         document.getElementById('tripDays').value = daysCount;
+        document.getElementById('driverBata').value = totalDriverBata;
     }
 
 

@@ -9,7 +9,7 @@ var schema = new Schema({
     to:{type:String, required:true},
     startingKm:{type:Number},
     endingKm:{type:Number},
-    distance:{type:String, required:true},
+    distance:{type:Number, required:true},
     stay:{type:String, required:true},
     vehicleType:{type:String, required:true},
     ac:{type:String,required:true},

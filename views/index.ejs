@@ -67,48 +67,85 @@
                         <!-- Details -->
                         <td>
                             <!-- Button trigger modal -->
-<button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-<%=trip._id%>">
-    Trip Details
-  </button>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal-<%=trip._id%>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Trip Details</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <table class="table">
-            <tr>
-                <td>Customer</td>
-                <td><%=trip.cusName%></td>
-            </tr>
-            <tr>
-                <td>Contact</td>
-                <td><%=trip.cusPhone%></td>
-            </tr>
-            <tr>
-                <td>Pickup Point</td>
-                <td><%=trip.cusPP%></td>
-            </tr>
-            <tr>
-                <td>Trip Tariff</td>
-                <td>&#8377;<%=trip.estAmt%></td>
-            </tr>
-            <tr>
-                <td>Advance Amount</td>
-                <td>&#8377;<%=trip.advanceAmt%></td>
-            </tr>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-<%=trip._id%>">
+                                Trip Details
+                              </button>
+                              
+                              <!-- Modal -->
+                              <div class="modal fade" id="exampleModal-<%=trip._id%>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5" id="exampleModalLabel">Trip Details</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <table class="table">
+                                        <tr>
+                                            <td>Customer</td>
+                                            <td><%=trip.cusName%></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Contact</td>
+                                            <td><%=trip.cusPhone%></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pickup Point</td>
+                                            <td><%=trip.cusPP%></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Vehicle Type</td>
+                                          <td><%=trip.vehicleType%></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Trip Days</td>
+                                          <td><%=trip.stay%></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Expected Kms</td>
+                                            <td><%=trip.distance%></td>
+                                          </tr>
+                                          <tr>
+                                            <td>Rate per KM</td>
+                                            <td>&#8377;<%=trip.perKM%></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Trip Tariff</td>
+                                          <td>&#8377;<%=trip.tripTariff%></td>
+                                      </tr>
+                                        <tr>
+                                            <td>Toll Amount</td>
+                                            <td>&#8377;<%=trip.tollAmt%></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Driver Bata</td>
+                                            <td>&#8377;<%=trip.driverBata%></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Day Rent</td>
+                                          <td>&#8377;<%=trip.dayRent%></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Hill Charge</td>
+                                          <td>&#8377;<%=trip.hillCharge%></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Trip Tariff</td>
+                                            <td>&#8377;<%=trip.estAmt%></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Advance Amount</td>
+                                            <td>&#8377;<%=trip.advanceAmt%></td>
+                                        </tr>
+                                        
+                                      </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                         </td>
 
                         <!-- Trip Confirmation -->
@@ -131,6 +168,9 @@
                                         <div class="form-floating mb-3">
                                           <input type="number" class="form-control" name="advAmount" id="advAmount" placeholder="">
                                           <label for="tripDate">Advance amount :</label>
+                                          <div id="advAmout" class="form-text">
+                                            Estimated Total Trip Amount : <%=trip.estAmt%>
+                                        </div>
                                         </div>
                                         <div class="form-floating">
                                           <button type="submit" class="btn btn-sm btn-primary">Confirm Trip</button>
@@ -174,6 +214,7 @@
               <table class="table">
                   <thead>
                     <tr>
+                      <th scope="col">Trip ID</th>
                       <th scope="col">Start Date</th>
                       <th scope="col">End Date</th>
                       <th scope="col">From</th>
@@ -181,7 +222,7 @@
                       <th scope="col">Details</th>
                       <th scope="col">Driver</th>
                       <th scope="col">Vehicle</th>
-                      <th scope="col">Alert</th>
+                      <!-- <th scope="col">Alert</th> -->
                       <th scope="col">Trip Over?</th>
                       <th scope="col">Cancel?</th>
                     </tr>
@@ -189,8 +230,9 @@
                   <tbody>
                       <% if (trips) { %>
                           <% trips.forEach(trip => { %>
-                              <% if(trip.tripConfirmed == "confirmed" && trip.closeTrip !== "Yes") { %>
+                              <% if(trip.tripConfirmed == "confirmed" && trip.closeTrip == "No" && trip.tripOver == "No") { %>
                     <tr>
+                      <td><%=trip.tripID%></td>
                       <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
                       <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
                       <td><%=trip.from%></td>
@@ -213,33 +255,61 @@
                                 <div class="modal-body">
                                   <table class="table">
                                     <tr>
-                                        <td>Customer</td>
-                                        <td><%=trip.cusName%></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Contact</td>
-                                        <td><%=trip.cusPhone%></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pickup Point</td>
-                                        <td><%=trip.cusPP%></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Trip Tariff</td>
-                                        <td>&#8377;<%=trip.estAmt%></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Advance Amount</td>
-                                        <td>&#8377;<%=trip.advanceAmt%></td>
-                                    </tr>
-                                    <tr>
-                                      <td>Driver Name</td>
-                                      <td><%=trip.driverName%></td>
+                                      <td>Customer</td>
+                                      <td><%=trip.cusName%></td>
                                   </tr>
                                   <tr>
-                                    <td>Driver Contact</td>
-                                    <td><%=trip.driverNum%></td>
+                                      <td>Contact</td>
+                                      <td><%=trip.cusPhone%></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Pickup Point</td>
+                                      <td><%=trip.cusPP%></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Vehicle Type</td>
+                                    <td><%=trip.vehicleType%></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Trip Days</td>
+                                    <td><%=trip.stay%></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Expected Kms</td>
+                                      <td><%=trip.distance%></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Rate per KM</td>
+                                      <td>&#8377;<%=trip.perKM%></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Trip Tariff</td>
+                                    <td>&#8377;<%=trip.tripTariff%></td>
                                 </tr>
+                                  <tr>
+                                      <td>Toll Amount</td>
+                                      <td>&#8377;<%=trip.tollAmt%></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Driver Bata</td>
+                                      <td>&#8377;<%=trip.driverBata%></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Day Rent</td>
+                                    <td>&#8377;<%=trip.dayRent%></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Hill Charge</td>
+                                    <td>&#8377;<%=trip.hillCharge%></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Trip Tariff</td>
+                                      <td>&#8377;<%=trip.estAmt%></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Advance Amount</td>
+                                      <td>&#8377;<%=trip.advanceAmt%></td>
+                                  </tr>
                                   </table>
                                 </div>
                                 <div class="modal-footer">
@@ -369,15 +439,15 @@
                       </td>
 
                       <!-- Alert Customer -->
-                      <td>
+                      <!-- <td>
 
                         
-                        <!-- Button trigger modal -->
+                        Button trigger modal
                         <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#alertCustomer-<%=trip._id%>">
                           Alert?
                         </button>
                           
-                          <!-- Modal -->
+                          Modal
                           <div class="modal fade" id="alertCustomer-<%=trip._id%>" tabindex="-1" aria-labelledby="alertCustomer" aria-hidden="true">
                             <div class="modal-dialog">
                               <div class="modal-content">
@@ -400,7 +470,7 @@
 
 
                         
-                      </td>
+                      </td> -->
                       <td>
 
                         <% if (trip.driverName == "" || trip.vehicleNo == null)  { %>
@@ -457,7 +527,7 @@
                     <tbody>
                         <% if (trips) { %>
                             <% trips.forEach(trip => { %>
-                                <% if(trip.paymentDone == "No" && trip.closeTrip == "Yes") { %>
+                                <% if(trip.tripOver == "Yes" && trip.paymentDone == "No") { %>
                       <tr>
                         <td><%=trip.dateFrom.toLocaleString().slice(0,8)%></td>
                         <td><%=trip.dateTo.toLocaleString().slice(0,8)%></td>

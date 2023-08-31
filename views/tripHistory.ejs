@@ -11,6 +11,7 @@
                 <table class="table">
                     <thead>
                       <tr>
+                        <th scope="col">Trip ID</th>
                         <th scope="col">Start Date</th>
                         <th scope="col">End Date</th>
                         <th scope="col">From</th>
@@ -27,6 +28,7 @@
                             <% trips.forEach(trip => { %>
                                 <% if(trip.paymentDone == "Yes") { %>
                       <tr>
+                        <td><%=trip.tripID%></td>
                         <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
                         <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
                         <td><%=trip.from%></td>

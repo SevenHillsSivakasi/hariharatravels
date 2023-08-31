@@ -56,14 +56,16 @@
                         </tr>
                         
                          <% tripsList.forEach(trip => { %>
-                          
+                          <% if (trip.tripOver == "No" && trip.tripConfirmed == "confirmed") { %>
+                           
+                         
                             <tr>
                                 <td><%=trip.tripID%></td>
                                 <td><%=trip.dateFrom.toISOString().slice(0,10)%></td>
                                 <td><%=trip.dateTo.toISOString().slice(0,10)%></td>
                                 
                             </tr>    
-
+                            <% } %>
                          <% }) %>
                         
                         

@@ -1,0 +1,93 @@
+<%- include("partials/header.ejs") -%>
+
+
+<section id="ledger">
+    <div class="container-fluid cf-maintenance">
+        <div class="row">
+            <div class="col-md-12 ledgerDiv">
+                <h2>Payment Entry</h2>
+            </div>
+            <div class="col-md-6" style="padding: 2% !important;">
+                <form action="/paymentEntry" method="post">
+                    <div class="form-floating  mb-3">
+                        <select class="form-select" required name="trips" id="trips" aria-label="trips">
+                            <option disabled selected>Select</option>
+                            <% if (trips) { %>
+                             <% trips.forEach(trip => { %>
+                                <% if (trip.paymentDone == "No") { %>
+                                <option value="<%=trip.tripID%>"><%=trip.tripID%></option>
+                                <% } %>
+                             <% }) %>
+                            <% } %>
+                        </select>
+                        <label for="trip">Choose Trip</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <input type="date" class="form-control" name="payDate" id="payDate">
+                        <label for="payDate">Date</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <input type="Number" class="form-control" name="amount" id="amount">
+                        <label for="amount">Payment Received</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <select class="form-select" required name="payMode" id="payMode" aria-label="payMode">
+                            <option disabled selected>Select</option>
+                            
+                                <option value="Online">Online</option>
+                                <option value="Cash">Cash</option>
+                            
+                        </select>
+                        <label for="vehicle">Choose Trip</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <input type="text" class="form-control" name="reference" id="reference">
+                        <label for="reference">Remarks</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <button type="submit" class="btn btn-sm btn-primary">Save Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="ledger">
+    <div class="container-fluid cf-maintenance">
+        <div class="row">
+            <div class="col-md-12 ledgerDiv">
+                <h2>Get Payment Details</h2>
+            </div>
+            <div class="col-md-6" style="padding: 2% !important;">
+                <form action="/getPaymentDetails" method="post">
+                    <div class="form-floating  mb-3">
+                        <input type="text" class="form-control" name="tripID" id="tripID">
+                        <label for="tripID">Enter a Trip ID</label>
+                    </div>
+                    <div class="form-floating  mb-3">
+                        <button type="submit" class="btn btn-sm btn-primary">Get Payment Details</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include("partials/footer.ejs") -%>

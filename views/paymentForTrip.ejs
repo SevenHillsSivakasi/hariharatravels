@@ -1,0 +1,60 @@
+<%- include("partials/header.ejs") -%>
+
+
+<section id="newTrip">
+    <div class="container-fluid cf-newTrip">
+      <div class="row">
+        <div class="col-md-12" style="text-align: center;">
+          <h3 class="indexTitle">Payments for the Trip : <span style="font-weight: bold;color: red;"><%=tripID%></span></h3>
+          <a href="/payment" style="font-weight: bold; text-decoration: none; color: red; cursor: pointer;">Back to Payments</a>
+
+        </div>
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Trip ID</th>
+                    <th scope="col">Payment Date</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Payment Mode</th>
+                    <th scope="col">Remarks</th>
+                    <th scope="col">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% if (payments) { %>
+                        <% payments.forEach(payment => { %>
+                            
+                  <tr>
+                    <td><%=payment.tripID%></td>
+                    <td><%=payment.payDate.toLocaleString().slice(0,9)%></td>
+                    <td><%=payment.amount%></td>
+                    <td><%=payment.payMode%></td>
+                    <td><%=payment.remarks%></td>
+                    <td><a href="/deleteEntry/<%=payment._id%>" type="button" class="btn btn-sm btn-danger">X</a></td>
+                  </tr>
+                  <% }) %>   
+               
+               <% } %>
+             
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <h3>Total Amount Received : <%=totalAmt%></h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+<%- include("partials/footer.ejs") -%>

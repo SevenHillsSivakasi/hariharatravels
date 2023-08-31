@@ -54,6 +54,7 @@ var Trip = require('../models/tripCalculator');
 var TripPreset = require('../models/tripPresets');
 const Garage = require('../models/garage');
 const Ledger = require('../models/ledger');
+const Payment = require('../models/payment');
 
 
 /* GET home page. */
@@ -132,10 +133,10 @@ router.post('/saveTrip', function(req,res,next){
     vehicleType:req.body.vehicleType,
     ac:req.body.acornot,
     perKM:req.body.ratePerKm,
-    dayRent:req.body.dayRent,
+    dayRent:req.body.dayRent * req.body.tripDays,
     tripTariff:req.body.tripTariff,
     tollAmt:req.body.tollAmt,
-    driverBata:req.body.driverBata * req.body.tripDays,
+    driverBata:req.body.driverBata,
     hillCharge:req.body.hillCharge,
     permitAmount:req.body.permitCharge,
     estAmt:req.body.totalTariff,
@@ -189,7 +190,8 @@ router.post('/updateTrip/:id', function(req,res,next){
       tollAmt:actToll,
       advanceAmt:actAdvAmt,
       totalTripAmt:actTotalTripFare,
-      balanceAmt:actBalTripFare
+      balanceAmt:actBalTripFare,
+      paymentDone:"No"
     }}
   )
   .then((result)=>{
@@ -476,12 +478,14 @@ router.post('/tripsList', function(req,res,next){
         {
           $and: [
             {closeTrip: "Yes"},
-            {paymentDone: "Yes"}
+            {paymentDone: "Yes"},
+            {dateFrom: {
+              $gte: req.body.from,
+              $lt: req.body.to
+            }
+          }
         ],
-          date: {
-            $gte: req.body.from,
-            $lt: req.body.to
-        } }
+           }
      
    )
    .then((result)=>{
@@ -522,14 +526,16 @@ router.post('/getTripList', function(req,res,next){
    
 })
   .then(result=>{
-
+    console.log(result);
     var totalKms = 0;
     var totalTripAmt = 0;
 
     result.forEach(trip=>{
-      totalKms = 0 + Number(trip.distance);
-      totalTripAmt = 0 + Number(trip.totalTripAmt);
+      totalKms += Number(trip.distance);
+      totalTripAmt += Number(trip.totalTripAmt);
     })
+
+    console.log(totalKms, totalTripAmt);
 
     res.render('vehicleTripReport',{title:'Vehicle Trips Report',trips:result, vehicle:vehicle, dateFrom:from, dateTo:to, totalKms:totalKms, totalTripAmt:totalTripAmt});
   })
@@ -564,7 +570,7 @@ router.post('/expenseUpdate/:id', function(req,res,next){
         driverPadi: req.body.driverPadi,
         expDiesel: req.body.dieselCost,
         tollAmt:req.body.tollAmt,
-        tripExpenses:tripExpenses,
+        totalExpenses:tripExpenses,
         netProfit:netProfit,
         expUpdated:"Yes"
       }
@@ -693,18 +699,15 @@ router.post('/getUpcomingTrips', function(req,res,next){
 
   Trip.find({
 
-    $and:[
+    // $and:[
 
-      {dateFrom:{
+      dateFrom:{
         $gte:from,
         $lt:to
-      }},
-      {
-        vehicleNo:vehicle},
-      {
-        tripOver:"No"
-      }
-    ]
+      },
+      // {vehicleNo:vehicle},
+      // {tripOver:"No"}
+    // ]
    
   })
   .then(result=>{
@@ -1043,8 +1046,6 @@ router.post('/getUpcomingTrips', function(req,res,next){
 
 // })
 
-
-
 router.get('/generateEstimate/:id', function(req,res,next){
 
   var id = req.params.id;
@@ -1055,7 +1056,7 @@ router.get('/generateEstimate/:id', function(req,res,next){
      {name:result.vehicleNo}).then(veh=>{
      console.log(veh);
      
-     res.render('billGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
+     res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
 
       let browser;
   (async () => {
@@ -1181,7 +1182,7 @@ router.get('/generateBill/:id', function(req,res,next){
      {name:result.vehicleNo}).then(veh=>{
      console.log(veh);
      
-     res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
+     res.render('billGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
 
       let browser;
   (async () => {
@@ -1296,6 +1297,50 @@ res.send(pdf);
 
 })
 
+router.get('/payment', function(req,res,next){
+
+  Trip.find()
+  .then(result=>{
+    res.render('payment',{title:'Payments | Harihara Travels', trips:result});
+  })
+
+  
+})
+
+router.post('/paymentEntry', function(req,res,next){
+  console.log(req.body);
+
+  const payment = new Payment({
+    tripID : req.body.trips,
+    payDate : req.body.payDate,
+    amount : req.body.amount,
+    payMode : req.body.payMode,
+    remarks : req.body.reference
+  })
+
+  payment.save()
+  .then(()=>{
+    res.redirect('/payment');
+  })
+
+})
+
+router.post('/getPaymentDetails', function(req,res,next){
+  Payment.find({tripID : req.body.tripID})
+  .then(result=>{
+    var totalAmt = 0;
+    result.forEach(ress=>{
+      totalAmt += ress.amount
+    })
+
+    res.render('paymentForTrip', {title: 'Payments Details | Harihara Travels', payments:result, tripID:req.body.tripID, totalAmt : totalAmt});
+  })
+})
+
+router.get('/deleteEntry/:id', function(req,res,next){
+  var paymentID = req.params.id;
+  Payment.findByIdAndDelete(paymentID).then(()=>{res.redirect('/payment')}).catch(err=>{console.log(err)});
+})
 
 router.get('/login', function(req,res,next){
   if(req.session.admin === true){

@@ -166,19 +166,22 @@
         var ratePerKm = Number(document.getElementById("ratePerKm").value);
         var tripTariff = Number(document.getElementById("tripTariff").value);
         var tollAmt = Number(document.getElementById("tollAmt").value);
-        var driverBata = Number(document.getElementById("driverBata").value);
+        // var driverBata = Number(document.getElementById("driverBata").value);
         var dayRent = Number(document.getElementById("dayRent").value);
         var tripDays = Number(document.getElementById("tripDays").value);
 
         var onlyTripExpense = 0;
         var rentalValue = 0;
         var totalDriverBata = 0;
+        var totalDriverBata = tripDays * 300;
 
         onlyTripExpense = expecKms * ratePerKm;
         rentalValue =  dayRent * tripDays;
-        totalDriverBata = tripDays * driverBata;
+        // totalDriverBata = tripDays * driverBata;
         var totalExpense = onlyTripExpense + rentalValue + tollAmt + totalDriverBata;
+        alert("Total Driver Bata : " + totalDriverBata)
 
+        document.getElementById("driverBata").value = totalDriverBata;
         document.getElementById("totalTariff").value = totalExpense;
         document.getElementById("tripTariff").value = onlyTripExpense;
     }  
