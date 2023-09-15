@@ -1237,6 +1237,14 @@ router.get('/generateBill/:id', function(req,res,next){
     
     
     if(req.session.stats){
+
+      
+      var xvfb = new Xvfb({
+        silent: true,
+        xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
+    });
+       xvfb.start((err)=>{if (err) console.error(err)});
+
           const stats = req.session.stats;
           const browser = await stats.puppeteer.launch({
             headless:false,
