@@ -1237,7 +1237,7 @@ router.get('/generateBill/:id', function(req,res,next){
     
     
     if(req.session.stats){
-       
+          cosnt stats = req.session.stats;
           const browser = await stats.puppeteer.launch({
             headless:false,
             args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
