@@ -67,14 +67,8 @@ router.get('/', function(req, res, next) {
         Garage.find().then(result2=>{
           // console.log(result2);
 
-          let browser;
+          
           (async () => {
-        
-            var xvfb = new Xvfb({
-              silent: true,
-              xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
-          });
-             xvfb.start((err)=>{if (err) console.error(err)});
         
             const PCR = require("puppeteer-chromium-resolver");
             const puppeteer = require('puppeteer');
@@ -91,9 +85,10 @@ router.get('/', function(req, res, next) {
           const stats = PCR.getStats(option);
           req.session.stats = stats;
           console.log(req.session.stats);
+          res.render('index', { title: 'HariHara Travels', trips:result, presets:result1, garages:result2 });
         })
 
-          res.render('index', { title: 'HariHara Travels', trips:result, presets:result1, garages:result2 });
+         
         }).catch(err=>{console.log(err); return res.render('error')});
       }).catch(err=>{console.log(err); return res.render('error')});
 
@@ -1111,6 +1106,11 @@ router.get('/generateEstimate/:id', function(req,res,next){
     const statss = req.session.stats;
     if(statss){
       
+      var xvfb = new Xvfb({
+            silent: true,
+            xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
+        });
+           xvfb.start((err)=>{if (err) console.error(err)});
           
           const browser = await statss.puppeteer.launch({
             headless:false,
