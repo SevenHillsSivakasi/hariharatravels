@@ -231,7 +231,7 @@
         
         var diffDays =  new Date(date2) - new Date(date1); 
         
-        var daysCount = diffDays / (86400*1000);
+        var daysCount = (diffDays / (86400*1000)) + 1;
         
         var totalDriverBata = daysCount * 300;
 

@@ -65,7 +65,34 @@ router.get('/', function(req, res, next) {
       // console.log(result);
       TripPreset.find().then(result1=>{
         Garage.find().then(result2=>{
-          console.log(result2);
+          // console.log(result2);
+
+          let browser;
+          (async () => {
+        
+            var xvfb = new Xvfb({
+              silent: true,
+              xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
+          });
+             xvfb.start((err)=>{if (err) console.error(err)});
+        
+            const PCR = require("puppeteer-chromium-resolver");
+            const puppeteer = require('puppeteer');
+            const option = {
+              revision: "",
+              detectionPath: "",
+              folderName: ".chromium-browser-snapshots",
+              defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+              hosts: [],
+              cacheRevisions: 2,
+              retry: 3,
+              silent: false
+          };      
+          const stats = PCR.getStats(option);
+          req.session.stats = stats;
+          console.log(req.session.stats);
+        })
+
           res.render('index', { title: 'HariHara Travels', trips:result, presets:result1, garages:result2 });
         }).catch(err=>{console.log(err); return res.render('error')});
       }).catch(err=>{console.log(err); return res.render('error')});
@@ -1061,30 +1088,31 @@ router.get('/generateEstimate/:id', function(req,res,next){
       let browser;
   (async () => {
 
-    var xvfb = new Xvfb({
-      silent: true,
-      xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
-  });
-     xvfb.start((err)=>{if (err) console.error(err)});
+  //   var xvfb = new Xvfb({
+  //     silent: true,
+  //     xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
+  // });
+  //    xvfb.start((err)=>{if (err) console.error(err)});
 
-    const PCR = require("puppeteer-chromium-resolver");
-    const puppeteer = require('puppeteer');
-    const option = {
-      revision: "",
-      detectionPath: "",
-      folderName: ".chromium-browser-snapshots",
-      defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
-      hosts: [],
-      cacheRevisions: 2,
-      retry: 3,
-      silent: false
-  };      
+  //   const PCR = require("puppeteer-chromium-resolver");
+  //   const puppeteer = require('puppeteer');
+  //   const option = {
+  //     revision: "",
+  //     detectionPath: "",
+  //     folderName: ".chromium-browser-snapshots",
+  //     defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+  //     hosts: [],
+  //     cacheRevisions: 2,
+  //     retry: 3,
+  //     silent: false
+  // };      
 
-  const stats = PCR.getStats(option);
-
-    if(stats){
+  // const stats = PCR.getStats(option);
+    const statss = req.session.stats;
+    if(statss){
       
-          const browser = await stats.puppeteer.launch({
+          
+          const browser = await statss.puppeteer.launch({
             headless:false,
             args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
             executablePath: stats.executablePath
@@ -1098,8 +1126,6 @@ router.get('/generateEstimate/:id', function(req,res,next){
 
     await page.setCacheEnabled(false); 
     // set your html as the pages content
-
-
 
     const html = htmll;
     await page.setContent(html, {
@@ -1119,7 +1145,28 @@ router.get('/generateEstimate/:id', function(req,res,next){
     res.send(pdf);
     }
     else{
+
+        var xvfb = new Xvfb({
+      silent: true,
+      xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
+  });
+     xvfb.start((err)=>{if (err) console.error(err)});
+
+    const PCR = require("puppeteer-chromium-resolver");
+    const puppeteer = require('puppeteer');
+    const option = {
+      revision: "",
+      detectionPath: "",
+      folderName: ".chromium-browser-snapshots",
+      defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+      hosts: [],
+      cacheRevisions: 2,
+      retry: 3,
+      silent: false
+  };  
+
       const stats = await PCR(option);
+      req.session.statss = stats;
       const browser = await stats.puppeteer.launch({
         headless:false,
         args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
@@ -1149,7 +1196,7 @@ res.contentType("application/pdf");
 // optionally:
 res.setHeader(
 "Content-Disposition",
-"attachment; filename=invoice.pdf"
+"attachment; filename=" + result.tripID + ".pdf"
 );
 
 res.send(pdf);
@@ -1187,27 +1234,9 @@ router.get('/generateBill/:id', function(req,res,next){
       let browser;
   (async () => {
 
-    var xvfb = new Xvfb({
-      silent: true,
-      xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
-  });
-     xvfb.start((err)=>{if (err) console.error(err)});
-
-    const PCR = require("puppeteer-chromium-resolver");
-    const puppeteer = require('puppeteer');
-    const option = {
-      revision: "",
-      detectionPath: "",
-      folderName: ".chromium-browser-snapshots",
-      defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
-      hosts: [],
-      cacheRevisions: 2,
-      retry: 3,
-      silent: false
-  };      
-  const stats = PCR.getStats(option);
-
-    if(stats){
+    
+    
+    if(req.session.stats){
        
           const browser = await stats.puppeteer.launch({
             headless:false,
@@ -1244,7 +1273,30 @@ router.get('/generateBill/:id', function(req,res,next){
     res.send(pdf);
     }
     else{
+
+      var xvfb = new Xvfb({
+        silent: true,
+        xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
+    });
+       xvfb.start((err)=>{if (err) console.error(err)});
+  
+      const PCR = require("puppeteer-chromium-resolver");
+      const puppeteer = require('puppeteer');
+      const option = {
+        revision: "",
+        detectionPath: "",
+        folderName: ".chromium-browser-snapshots",
+        defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+        hosts: [],
+        cacheRevisions: 2,
+        retry: 3,
+        silent: false
+    };   
+
+  ;
+
       const stats = await PCR(option);
+      req.session.stats = stats;
       const browser = await stats.puppeteer.launch({
         headless:false,
         args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
@@ -1274,7 +1326,7 @@ res.contentType("application/pdf");
 // optionally:
 res.setHeader(
 "Content-Disposition",
-"attachment; filename=invoice.pdf"
+"attachment; filename" + result.tripID + ".pdf"
 );
 
 res.send(pdf);

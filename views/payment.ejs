@@ -10,7 +10,7 @@
             <div class="col-md-6" style="padding: 2% !important;">
                 <form action="/paymentEntry" method="post">
                     <div class="form-floating  mb-3">
-                        <select class="form-select" required name="trips" id="trips" aria-label="trips">
+                        <select class="form-select" required name="trips" id="trips" aria-label="trips"  required>
                             <option disabled selected>Select</option>
                             <% if (trips) { %>
                              <% trips.forEach(trip => { %>
@@ -23,15 +23,15 @@
                         <label for="trip">Choose Trip</label>
                     </div>
                     <div class="form-floating  mb-3">
-                        <input type="date" class="form-control" name="payDate" id="payDate">
+                        <input type="date" class="form-control" name="payDate" id="payDate" required>
                         <label for="payDate">Date</label>
                     </div>
                     <div class="form-floating  mb-3">
-                        <input type="Number" class="form-control" name="amount" id="amount">
+                        <input type="Number" class="form-control" name="amount" id="amount" required>
                         <label for="amount">Payment Received</label>
                     </div>
                     <div class="form-floating  mb-3">
-                        <select class="form-select" required name="payMode" id="payMode" aria-label="payMode">
+                        <select class="form-select" required name="payMode" id="payMode" aria-label="payMode" required>
                             <option disabled selected>Select</option>
                             
                                 <option value="Online">Online</option>
@@ -41,7 +41,7 @@
                         <label for="vehicle">Choose Trip</label>
                     </div>
                     <div class="form-floating  mb-3">
-                        <input type="text" class="form-control" name="reference" id="reference">
+                        <input type="text" class="form-control" name="reference" id="reference" required>
                         <label for="reference">Remarks</label>
                     </div>
                     <div class="form-floating  mb-3">
@@ -62,7 +62,7 @@
             <div class="col-md-6" style="padding: 2% !important;">
                 <form action="/getPaymentDetails" method="post">
                     <div class="form-floating  mb-3">
-                        <input type="text" class="form-control" name="tripID" id="tripID">
+                        <input type="text" class="form-control" name="tripID" id="tripID" required>
                         <label for="tripID">Enter a Trip ID</label>
                     </div>
                     <div class="form-floating  mb-3">
