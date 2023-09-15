@@ -85,10 +85,10 @@ router.get('/', function(req, res, next) {
           const stats = PCR.getStats(option);
           req.session.stats = stats;
           console.log(req.session.stats);
-          res.render('index', { title: 'HariHara Travels', trips:result, presets:result1, garages:result2 });
+          
         })
 
-         
+        res.render('index', { title: 'HariHara Travels', trips:result, presets:result1, garages:result2 });
         }).catch(err=>{console.log(err); return res.render('error')});
       }).catch(err=>{console.log(err); return res.render('error')});
 
