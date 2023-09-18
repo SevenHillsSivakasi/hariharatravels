@@ -38,6 +38,8 @@ var schema = new Schema({
     cusAdd:{type:String,required:true},
     cusPhone:{type:String,required:true},
     cusPP:{type:String,required:true},
+    dieselLtrs:{type:Number, default:0},
+    mileage:{type:Number, default:0},
     expDiesel:{type:Number,default:0},
     expUpdated:{type:String,default:"No"},
     totalExpenses:{type:Number,default:0},

@@ -60,28 +60,44 @@
                                         </tr>
                                       <tr>
                                           <td>Total KMs</td>
-                                          <td><%=trip.distance%></td>
+                                          <td><%=trip.distance%>KMs</td>
                                       </tr>
                                       <tr>
                                           <td>Rent per KM</td>
-                                          <td><%=trip.perKM%></td>
+                                          <td>&#8377;<%=trip.perKM%></td>
                                       </tr> 
                                       <tr>
                                         <td>Trip Tariff</td>
-                                        <td><%=trip.tripTariff%></td>
+                                        <td>&#8377;<%=trip.tripTariff%></td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Expenses</strong></td>
                                     </tr>
                                       <tr>
                                           <td>Toll Amount</td>
                                           <td>&#8377;<%=trip.tollAmt%></td>
                                       </tr>
                                       <tr>
+                                        <td>Driver Padi</td>
+                                        <td>&#8377;<%=trip.driverPadi%></td>
+                                    </tr>
+                                    
+                                      <tr>
                                           <td>Driver Bata</td>
                                           <td>&#8377;<%=trip.driverBata%></td>
                                       </tr>
                                       <tr>
+                                        <td>Diesel Amount</td>
+                                        <td>&#8377;<%=trip.expDiesel%></td>
+                                    </tr>
+                                      <tr>
                                           <td>Vehicle Rent</td>
                                           <td>&#8377;<%=trip.dayRent%></td>
                                       </tr>
+                                      <tr>
+                                        <td><strong>Total Expenses</strong></td>
+                                        <td><strong>&#8377;<%=trip.totalExpenses%></strong></td>
+                                    </tr>
                                     </table>
                                   </div>
                                   <div class="modal-footer">
@@ -93,7 +109,7 @@
                         </td>
 
                         <td>&#8377;<%=trip.totalTripAmt%></td>
-                        <td>&#8377;<%=trip.tripExpenses%></td>
+                        <td>&#8377;<%=trip.totalExpenses%></td>
                         <td>&#8377;<%=trip.netProfit%></td>
                         <td><a href="/tripDeletion/<%=trip._id%>" type="button" class="btn btn-sm btn-primary">X</a></td>                        </td>
                         

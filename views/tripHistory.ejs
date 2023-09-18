@@ -92,21 +92,20 @@
                         <td>
                           <% if (trip.expUpdated == "Yes") { %>
                             <!-- Button trigger modal -->
-                          <button type="button" class="btn disabled btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#tripExpense-<%=trip._id%>">
+                          <button type="button" class="btn disabled btn-sm btn-secondary" >
                             Trip Expenses
                           </button>
                           <% } else { %>
-                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tripExpense-<%=trip._id%>">
+                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tripExpense<%=trip._id%>">
                               Trip Expenses
                             </button>
-                          <% } %>
-                          
-                          <!-- Modal -->
-                          <div class="modal fade" id="tripExpense-<%=trip._id%>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                               <!-- Modal -->
+                          <div class="modal fade" id="tripExpense<%=trip._id%>" tabindex="-1" aria-labelledby="tripExpense<%=trip._id%>" aria-hidden="true">
                             <div class="modal-dialog">
                               <div class="modal-content">
                                 <div class="modal-header">
-                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Trip Expenses Update</h1>
+                                  <h1 class="modal-title fs-5" id="tripExpense<%=trip._id%>">Trip Expenses Update</h1>
                                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -162,6 +161,10 @@
                               </div>
                             </div>
                           </div>
+
+                          <% } %>
+                          
+                       
 
                         </td>
                         <td><a href="/generateBill/<%=trip._id%>" type="button" class="btn btn-sm btn-success"><i class="bi bi-printer-fill"></i></a></td>
@@ -225,8 +228,11 @@
 
   function mileageCalc(){
     var totalDiesel = Number(document.getElementById("dieselLtrs").value);
+    alert(totalDiesel);
     var totalKms = Number(document.getElementById("totalKms").value);
+    alert(totalKms);
     var totalTripAmt = Number(document.getElementById("totalTripAmount").value);
+    alert(totalTripAmt);
 
     var mileage = Math.floor(totalKms / totalDiesel);
 
