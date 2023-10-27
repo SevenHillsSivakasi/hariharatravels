@@ -7,8 +7,8 @@
         <h3 class="indexTitle">Start Book a Trip</h3>
         <form action="/newTripFromPreset" method="post">
           <div class="form-floating">
-            <select class="form-select" name="presetTripSelected" id="presetTripSelected" aria-label="Floating label select example">
-              <option selected>Choose a preset trip</option>
+            <select class="form-select" name="presetTripSelected" id="presetTripSelected" aria-label="Floating label select example" required>
+              <option value = "" selected disabled>Choose a preset trip</option>
               <% if (presets) { %>
                 <% presets.forEach(preset => { %>
               <option value="<%=preset._id%>"><%=preset.destination%></option>
@@ -59,8 +59,8 @@
                                 <% if(trip.tripConfirmed == "enquiry") { %>
                       <tr>
                         <td><%=trip.tripID%></td>
-                        <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
-                        <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
+                        <td><%=trip.dateFrom.toLocaleString('en-CH',{day:'numeric',month:'short', year:'numeric'})%></td>
+                        <td><%=trip.dateTo.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
                         <td><%=trip.from%></td>
                         <td><%=trip.to%></td>
 
@@ -166,7 +166,7 @@
                                     <div class="modal-body">
                                       <form action="/confirmTrip/<%=trip._id%>" method="post">
                                         <div class="form-floating mb-3">
-                                          <input type="number" class="form-control" name="advAmount" id="advAmount" placeholder="">
+                                          <input type="number" class="form-control" name="advAmount" id="advAmount" placeholder="" required>
                                           <label for="tripDate">Advance amount :</label>
                                           <div id="advAmout" class="form-text">
                                             Estimated Total Trip Amount : <%=trip.estAmt%>
@@ -233,8 +233,8 @@
                               <% if(trip.tripConfirmed == "confirmed" && trip.closeTrip == "No" && trip.tripOver == "No") { %>
                     <tr>
                       <td><%=trip.tripID%></td>
-                      <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
-                      <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
+                      <td><%=trip.dateFrom.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
+                      <td><%=trip.dateTo.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
                       <td><%=trip.from%></td>
                       <td><%=trip.to%></td>
                       <!-- Trip Details -->
@@ -356,11 +356,11 @@
                                       
                                     <% } else { %>
                                       <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" name="driverName" id="driverName" placeholder="">
+                                        <input type="text" class="form-control" name="driverName" id="driverName" placeholder="" required>
                                         <label for="tripDate">Driver Name :</label>
                                       </div>
                                       <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" name="driverNum" id="driverNum" placeholder="">
+                                        <input type="number" class="form-control" name="driverNum" id="driverNum" placeholder="" required>
                                         <label for="tripDate">Driver Contact :</label>
                                       </div>
                                       
@@ -410,8 +410,8 @@
                                   <form action="/assignVehicle/<%=trip._id%>" method="post">
                                     <div class="form-floating">
                                       <% if (trip.vehicleNo === "") { %>
-                                        <select class="form-select" name="vehicleSelection" id="vehicleSelection" aria-label="Floating label select example">
-                                          <option selected>Choose a Vehicle</option>
+                                        <select class="form-select" name="vehicleSelection" id="vehicleSelection" aria-label="Floating label select example" required>
+                                          <option value = "" selected disabled>Choose a Vehicle</option>
                                           <% if (garages) { %>
                                             <% garages.forEach(garage => { %>
                                            <option value="<%=garage.name%>"> <%=garage.name%></option>
@@ -531,8 +531,8 @@
                                 <% if(trip.tripOver == "Yes" && trip.paymentDone == "No") { %>
                       <tr>
                         <td><%=trip.tripID%></td>
-                        <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
-                        <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
+                        <td><%=trip.dateFrom.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
+                        <td><%=trip.dateTo.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
                         <td><%=trip.from%></td>
                         <td><%=trip.to%></td>
                         <td><%=trip.vehicleType%></td>
@@ -612,7 +612,7 @@
                                 <div class="modal-body">
                                   <form action="/paymentUpdate/<%=trip._id%>" method="post">
                                     <div class="form-floating mb-3">
-                                      <input type="number" class="form-control" name="pendingPayment" id="pendingPayment" placeholder="">
+                                      <input type="number" class="form-control" name="pendingPayment" id="pendingPayment" required placeholder="">
                                       <label for="tripDate">Payment Received</label>
                                     </div>
                                     <div id="passwordHelpBlock mb-3" class="form-text">

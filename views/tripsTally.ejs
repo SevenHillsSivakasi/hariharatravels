@@ -29,8 +29,8 @@
                                 <% if(trip.paymentDone == "Yes" && trip.closeTrip == "Yes") { %>
                       <tr>
                         <td><%=trip.tripID%></td>
-                        <td><%=trip.dateFrom.toLocaleString().slice(0,8)%></td>
-                        <td><%=trip.dateTo.toLocaleString().slice(0,8)%></td>
+                        <td><%=trip.dateFrom.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
+                        <td><%=trip.dateTo.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
                         <td><%=trip.vehicleType%></td>
 
                         <!-- Trip Details -->

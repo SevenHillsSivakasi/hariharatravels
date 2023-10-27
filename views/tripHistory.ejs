@@ -29,8 +29,8 @@
                                 <% if(trip.paymentDone == "Yes") { %>
                       <tr>
                         <td><%=trip.tripID%></td>
-                        <td><%=trip.dateFrom.toLocaleString().slice(0,9)%></td>
-                        <td><%=trip.dateTo.toLocaleString().slice(0,9)%></td>
+                        <td><%=trip.dateFrom.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
+                        <td><%=trip.dateTo.toLocaleString('en-CH',{day:'numeric', month:'short', year:'numeric'})%></td>
                         <td><%=trip.from%></td>
                         <td><%=trip.to%></td>
                         <td>
@@ -111,43 +111,43 @@
                                 <div class="modal-body">
                                   <form action="/expenseUpdate/<%=trip._id%>" method="post">
                                     <div class="form-floating mb-3">
-                                      <input type="number" class="form-control" name="dieselLtrs" id="dieselLtrs" placeholder="Total Diesel Litres" onChange="mileageCalc()">
+                                      <input type="number" class="form-control" name="dieselLtrs" id="dieselLtrs" placeholder="Total Diesel Litres" onChange="mileageCalc()" required>
                                       <label for="driverBata">Total Ltr of Diesel</label>
                                     </div>
                                     <input type="hidden" name="totalKms" id="totalKms" value="<%=trip.distance%>">
                                     <input type="hidden" name="totalTripAmount" id="totalTripAmount" value="<%=trip.totalTripAmt%>">
                                     <div class="form-floating mb-3">
-                                      <input type="number" class="form-control" name="mileage" id="mileage" placeholder="Trip Mileage value">
+                                      <input type="number" class="form-control" name="mileage" id="mileage" placeholder="Trip Mileage value" required>
                                       <label for="mileage">Trip Mileage Value</label>
                                     </div>
                                     <div class="form-floating mb-3">
-                                      <input type="number" class="form-control" name="driverPadi" id="driverPadi" placeholder="">
+                                      <input type="number" class="form-control" name="driverPadi" id="driverPadi" placeholder="" required>
                                       <label for="driverPadi">Driver Padi</label>
                                     </div>
                                     <div class="form-floating">
-                                      <input type="number" class="form-control" name="driverBata" id="driverBata" placeholder="">
+                                      <input type="number" class="form-control" name="driverBata" id="driverBata" placeholder="" required>
                                       <label for="driverBata">Driver Bata</label>
                                     </div>
                                     <div id="passwordHelpBlock" class="form-text mb-3">
                                       Expected Driver Bata: <%=trip.driverBata%>
                                   </div>
                                   
-                                  <div class="form-floating">
-                                    <input type="number" class="form-control" name="dieselCost" id="dieselCost" placeholder="">
+                                  <div class="form-floating"> 
+                                    <input type="number" class="form-control" name="dieselCost" id="dieselCost" placeholder="" required>
                                     <label for="dieselCost">Diesel Cost</label>
                                   </div>
                                   <div id="passwordHelpBlock" class="form-text mb-3">
                                     Enter Diesel Cost Value
                                 </div>
                                 <div class="form-floating mb-3">
-                                  <input type="number" class="form-control" name="tollAmt" id="tollAmt" placeholder="">
+                                  <input type="number" class="form-control" name="tollAmt" id="tollAmt" placeholder="" required>
                                   <label for="tollAmt">Toll Amount</label>
                                 </div>
                                 <div id="passwordHelpBlock" class="form-text  mb-3">
                                   Expected Toll Amount : <%=trip.tollAmt%>
                                 </div>
                                 <div class="form-floating">
-                                  <input type="number" class="form-control" name="miscExp" id="miscExp" placeholder="">
+                                  <input type="number" class="form-control" name="miscExp" id="miscExp" placeholder="" required>
                                   <label for="miscExp">Misc Expenses</label>
                                 </div>
                                   <div>
@@ -193,8 +193,8 @@
           <div class="col-md-6" style="padding: 2% !important;">
               <form action="/getTripList" method="post">
                   <div class="form-floating  mb-3">
-                      <select class="form-select" required name="vehicle" id="vehicle" aria-label="vehicleType">
-                          <option disabled selected>Select</option>
+                      <select class="form-select" required name="vehicle" id="vehicle" aria-label="vehicleType" required>
+                          <option value="" disabled selected>Select</option>
                           <% if (garages) { %>
                            <% garages.forEach(vehicle => { %>
                               <option value="<%=vehicle.name%>"><%=vehicle.name%></option>
@@ -205,11 +205,11 @@
                       <label for="vehicle">Choose Vehicle</label>
                   </div>
                   <div class="form-floating mb-3">
-                      <input type="date" class="form-control" name="from" id="from" placeholder="">
+                      <input type="date" class="form-control" name="from" id="from" placeholder="" required>
                       <label for="from">Journey Date</label>
                   </div>
                   <div class="form-floating  mb-3">
-                      <input type="date" class="form-control" name="to" id="to">
+                      <input type="date" class="form-control" name="to" id="to" required>
                       <label for="to">End Date</label>
                   </div>
                   <div class="form-floating  mb-3">
@@ -228,11 +228,11 @@
 
   function mileageCalc(){
     var totalDiesel = Number(document.getElementById("dieselLtrs").value);
-    alert(totalDiesel);
+    // alert(totalDiesel);
     var totalKms = Number(document.getElementById("totalKms").value);
-    alert(totalKms);
+    // alert(totalKms);
     var totalTripAmt = Number(document.getElementById("totalTripAmount").value);
-    alert(totalTripAmt);
+    // alert(totalTripAmt);
 
     var mileage = Math.floor(totalKms / totalDiesel);
 

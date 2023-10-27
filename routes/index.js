@@ -9,11 +9,11 @@ const toWords = new ToWords();
 
 const puppeteer = require("puppeteer");
 
-//Required package
-var pdf = require("pdf-creator-node");
+// //Required package
+// var pdf = require("pdf-creator-node");
 var fs = require("fs");
 
-var Xvfb = require('xvfb');
+// var Xvfb = require('xvfb');
 
 const multer  = require('multer')
 
@@ -1058,117 +1058,55 @@ router.get('/generateEstimate/:id', function(req,res,next){
      
      res.render('estimateGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
 
-      let browser;
-  (async () => {
+      if(err) console.log(err);
 
-    var xvfb = new Xvfb({
-      silent: true,
-      xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
-  });
-     xvfb.start((err)=>{if (err) console.error(err)});
+      (async()=>{
 
-    const PCR = require("puppeteer-chromium-resolver");
-    const puppeteer = require('puppeteer');
-    const option = {
-      revision: "",
-      detectionPath: "",
-      folderName: ".chromium-browser-snapshots",
-      defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
-      hosts: [],
-      cacheRevisions: 2,
-      retry: 3,
-      silent: false
-  };      
-
-  const stats = PCR.getStats(option);
-
-    if(stats){
-      
-          const browser = await stats.puppeteer.launch({
-            headless:false,
-            args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
-            executablePath: stats.executablePath
-          });
-
-    // create a new page
-    const page = await browser.newPage();
-          
-    // Configure the navigation timeout
-    await page.setDefaultNavigationTimeout(0);
-
-    await page.setCacheEnabled(false); 
-    // set your html as the pages content
-
-
-
-    const html = htmll;
-    await page.setContent(html, {
-    waitUntil: 'domcontentloaded'
-    });
-    await page.emulateMediaType('screen');
-    const pdf = await page.pdf({format: "A4"});
-    res.contentType("application/pdf");
-
-
-    // optionally:
-    res.setHeader(
-    "Content-Disposition",
-    "attachment; filename=" + result.tripID + ".pdf"
-    );
-
-    res.send(pdf);
-    }
-    else{
-      const stats = await PCR(option);
-      const browser = await stats.puppeteer.launch({
-        headless:false,
-        args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
-        executablePath: stats.executablePath
+      const browser = await puppeteer.launch({
+        headless:true,
+        args: ['--no-sandbox','--disable-setuid-sandbox','--single-process','--no-zygote' ],
+        executablePath: process.env.NODE_ENV === "production" ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath()
       });
 
-// create a new page
-const page = await browser.newPage();
-      
-// Configure the navigation timeout
-await page.setDefaultNavigationTimeout(0);
+      // create a new page
+      const page = await browser.newPage();
+            
+      // Configure the navigation timeout
+      await page.setDefaultNavigationTimeout(0);
 
-await page.setCacheEnabled(false); 
-// set your html as the pages content
+      await page.setCacheEnabled(true); 
+      // set your html as the pages content
 
+      const html = htmll;
+      await page.setContent(html, {
+      waitUntil: 'domcontentloaded'
+      });
+      await page.emulateMediaType('screen');
+      const pdf = await page.pdf({format: "A4"});
+      res.contentType("application/pdf");
 
+      // optionally:
+      res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + result.tripID + "-" + result.cusName + ".pdf"
+      );
 
-const html = htmll;
-await page.setContent(html, {
-waitUntil: 'domcontentloaded'
-});
-await page.emulateMediaType('screen');
-const pdf = await page.pdf({format: "A4"});
-res.contentType("application/pdf");
+      res.send(pdf);
 
-
-// optionally:
-res.setHeader(
-"Content-Disposition",
-"attachment; filename=" + result.tripID + ".pdf"
-);
-
-res.send(pdf);
-
-    }
-
-  
-  })()
+    })()
     .catch(err => {
       console.error(err);
       res.sendStatus(500);
     }) 
-    .finally(() => browser?.close());
-})
-     
-  
+    
+          
+
+
 })
 
 })
+
+ })
 
 })
 
@@ -1184,110 +1122,47 @@ router.get('/generateBill/:id', function(req,res,next){
      
      res.render('billGenerator', {bill:result, vehicleName:veh.name, seat:veh.seat}, function(err,htmll){
 
-      let browser;
-  (async () => {
+      if(err) console.log(err);
 
-    var xvfb = new Xvfb({
-      silent: true,
-      xvfb_args: ["-screen", "0", '1280x720x24', "-ac"],
-  });
-     xvfb.start((err)=>{if (err) console.error(err)});
+      (async()=>{
 
-    const PCR = require("puppeteer-chromium-resolver");
-    const puppeteer = require('puppeteer');
-    const option = {
-      revision: "",
-      detectionPath: "",
-      folderName: ".chromium-browser-snapshots",
-      defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
-      hosts: [],
-      cacheRevisions: 2,
-      retry: 3,
-      silent: false
-  };      
-  const stats = PCR.getStats(option);
-
-    if(stats){
-       
-          const browser = await stats.puppeteer.launch({
-            headless:false,
-            args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
-            executablePath: stats.executablePath
-          });
-
-    // create a new page
-    const page = await browser.newPage();
-          
-    // Configure the navigation timeout
-    await page.setDefaultNavigationTimeout(0);
-
-    await page.setCacheEnabled(false); 
-    // set your html as the pages content
-
-
-
-    const html = htmll;
-    await page.setContent(html, {
-    waitUntil: 'domcontentloaded'
-    });
-    await page.emulateMediaType('screen');
-    const pdf = await page.pdf({format: "A4"});
-    res.contentType("application/pdf");
-
-
-    // optionally:
-    res.setHeader(
-    "Content-Disposition",
-    "attachment; filename=" + result.tripID + ".pdf"
-    );
-
-    res.send(pdf);
-    }
-    else{
-      const stats = await PCR(option);
-      const browser = await stats.puppeteer.launch({
-        headless:false,
-        args: ['--no-sandbox','--disable-setuid-sandbox','--display='+xvfb._display],
-        executablePath: stats.executablePath
+      const browser = await puppeteer.launch({
+        headless:true,
+        args: ['--no-sandbox','--disable-setuid-sandbox','--single-process','--no-zygote' ],
+        executablePath: process.env.NODE_ENV === "production" ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath()
       });
 
-// create a new page
-const page = await browser.newPage();
-      
-// Configure the navigation timeout
-await page.setDefaultNavigationTimeout(0);
+      // create a new page
+      const page = await browser.newPage();
+            
+      // Configure the navigation timeout
+      await page.setDefaultNavigationTimeout(0);
 
-await page.setCacheEnabled(false); 
-// set your html as the pages content
+      await page.setCacheEnabled(true); 
+      // set your html as the pages content
 
+      const html = htmll;
+      await page.setContent(html, {
+      waitUntil: 'domcontentloaded'
+      });
+      await page.emulateMediaType('screen');
+      const pdf = await page.pdf({format: "A4"});
+      res.contentType("application/pdf");
 
+      // optionally:
+      res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + result.tripID + "-" + result.cusName + ".pdf"
+      );
 
-const html = htmll;
-await page.setContent(html, {
-waitUntil: 'domcontentloaded'
-});
-await page.emulateMediaType('screen');
-const pdf = await page.pdf({format: "A4"});
-res.contentType("application/pdf");
+      res.send(pdf);
 
-
-// optionally:
-res.setHeader(
-"Content-Disposition",
-"attachment; filename=" + result.tripID + ".pdf"
-);
-
-res.send(pdf);
-
-    }
-
-  
-  })()
+    })()
     .catch(err => {
       console.error(err);
       res.sendStatus(500);
     }) 
-    .finally(() => browser?.close());
+    
 })
      
   
