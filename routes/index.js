@@ -1183,20 +1183,55 @@ router.get('/payment', function(req,res,next){
 })
 
 router.post('/paymentEntry', function(req,res,next){
-  console.log(req.body);
+  
+  var id = req.body.trips;
+  Trip.findById(id)
+  .then(result=>{
+    console.log(result);
+    var pendingPayment = Number(result.balanceAmt);
+    var receivedPayment = Number(req.body.amount);
+    var balance = pendingPayment - receivedPayment;
+    var updatedAdvance = result.advanceAmt + receivedPayment;
+    console.log("Pending Amount :" + pendingPayment);
+    console.log("The Balance is " + balance);
+    
+    if(balance <= 0){
+      Trip.updateOne({_id:result._id},{$set:{closeTrip:"Yes", paymentDone:"Yes", balanceAmt:0}})
+      .then(()=>{
+        const payment = new Payment({
+          tripID : req.body.trips,
+          payDate : req.body.payDate,
+          amount : req.body.amount,
+          payMode : req.body.payMode,
+          remarks : req.body.reference
+        })
+        payment.save()
+        .then(ress=>{
+          res.redirect('/');
+        }).catch(err=>{console.log(err);});
+       })
+      .catch(err=>{console.log(err); res.redirect('/')});
+    }
+    else{
+      Trip.updateOne({_id:result._id},{$set:{advanceAmt : updatedAdvance, balanceAmt:balance}})
+      .then(()=>{
+        const payment = new Payment({
+          tripID : req.body.tripID,
+          payDate : req.body.payDate,
+          amount : req.body.amount,
+          payMode : req.body.payMode,
+          remarks : req.body.reference
+        })
+        payment.save()
+        .then(ress=>{
+          res.redirect('/');
+        }).catch(err=>{console.log(err);});
+      })
+      .catch(err=>{console.log(err); res.redirect('/')});
+    }
 
-  const payment = new Payment({
-    tripID : req.body.trips,
-    payDate : req.body.payDate,
-    amount : req.body.amount,
-    payMode : req.body.payMode,
-    remarks : req.body.reference
   })
-
-  payment.save()
-  .then(()=>{
-    res.redirect('/payment');
-  })
+  
 
 })
 
